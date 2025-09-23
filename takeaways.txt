@@ -1,0 +1,9 @@
+npx supabase login //Logins to dashboard for the project.
+
+npx supabase gen types --project-id djtrsbnmuzvpfgshvqyt > ./utils/supabase/database-types.ts
+if you changing anything in database/tables, you'll have to update project types. 
+
+
+//if we making a async call to supabase, we can create a return type for that call: 
+import { QueryData } from '@supabase/supabase-js';  
+export type HomePostsType = QueryData<ReturnType<typeof getHomePosts>> 
