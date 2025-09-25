@@ -3,7 +3,7 @@ import Comments from "@/components/CommentsModal";
 import { useSinglePost } from "@/hooks/useSinglePost";
 
 const SinglePost = ({ params }: { params: Promise<{ slug: string }> }) => {
-    const { data: post, isFetching } = useSinglePost(params);
+    const { data: post } = useSinglePost(params);
 
     return (
         <>
@@ -13,7 +13,7 @@ const SinglePost = ({ params }: { params: Promise<{ slug: string }> }) => {
                         <h2 className="font-bold text-xl">{post.title}</h2>
                         <p>{post.content}</p>
                         <p>Created by: {post.users.username}</p>
-                        
+
                         <div className="flex justify-between items-center mt-5">
                             <Comments>
                                 <Comments.Toggle childButtonType={false}>

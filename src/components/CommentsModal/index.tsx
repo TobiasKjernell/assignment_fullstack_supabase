@@ -1,7 +1,6 @@
 'use client'
 
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
-import { SinglePostsType } from "../../../utils/supabase/queries";
 
 interface ICommentContext {
     showComments: boolean,
