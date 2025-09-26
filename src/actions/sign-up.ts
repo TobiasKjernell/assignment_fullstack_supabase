@@ -4,14 +4,14 @@ import { redirect } from "next/navigation";
 import { z } from "zod"
 import { createClient as createServerClient } from "../../utils/supabase/server-client"
 import { signUpSchema } from "./schemas";
-import { getAllUsernameWith } from "../../utils/supabase/queries";
+import { getAllUsersWithUsername } from "../../utils/supabase/queries";
 
 
 export const SignUp = async (userDataValues: z.infer<typeof signUpSchema>) => {
 
     const parsedData = signUpSchema.parse(userDataValues);
     const supabaseServer = await createServerClient();
-    const { data: userNameData, error } = await getAllUsernameWith(userDataValues.username);
+    const { data: userNameData, error } = await getAllUsersWithUsername(userDataValues.username);
    
     if (userNameData && userNameData?.length > 0) throw new Error('Username taken already');
 

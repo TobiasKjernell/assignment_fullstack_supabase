@@ -27,7 +27,7 @@ export const getSearchedPosts = async (searchTerm: string, signal: AbortSignal) 
         .ilike('title', `%${searchTerm}%`).abortSignal(signal);
 }
 
-export const getAllUsernameWith = async (name: string) => {
+export const getAllUsersWithUsername = async (name: string) => {
     const supabase = createClient();
     return supabase.from('users').select('*').ilike('username', `%${name}`);
 }
