@@ -16,15 +16,20 @@ export const getSinglePost = async (slug: string) => {
     return await supabase.from('posts')
         .select('*, users(username)')
         .eq('slug', slug)
-        .single();  
+        .single();
 }
 
-export const getSearchedPosts = async (searchTerm: string, signal:AbortSignal) => {
+export const getSearchedPosts = async (searchTerm: string, signal: AbortSignal) => {
     const supabase = createClient();
 
     return await supabase.from('posts')
         .select('title, slug')
         .ilike('title', `%${searchTerm}%`).abortSignal(signal);
+}
+
+export const getAllUsernameWith = async (name: string) => {
+    const supabase = createClient();
+    return supabase.from('users').select('*').ilike('username', `%${name}`);
 }
 
 export type HomePostsType = QueryData<ReturnType<typeof getHomePosts>>

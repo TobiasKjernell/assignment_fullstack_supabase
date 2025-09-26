@@ -27,7 +27,6 @@ export const middleware = async (request: NextRequest) => {
     if (!user && protectedRoutes.some(route => route.test(request.nextUrl.pathname))) {
         const newrUrl: NextURL = request.nextUrl.clone();
         newrUrl.pathname = '/auth/login';
-        console.log(newrUrl);
         return NextResponse.redirect(newrUrl);
     }
     return supabaseRes;

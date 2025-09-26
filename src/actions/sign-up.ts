@@ -1,29 +1,33 @@
 'use server'
 
 import { redirect } from "next/navigation";
+import { z } from "zod"
 import { createClient as createServerClient } from "../../utils/supabase/server-client"
+import { signUpSchema } from "./schemas";
+import { getAllUsernameWith } from "../../utils/supabase/queries";
 
-export const SignUp = async (formData: FormData) => {
-    const userData = {
-        email: formData.get('email') as string,
-        username: formData.get('username') as string,
-        password: formData.get('password') as string
-    }
 
+export const SignUp = async (userDataValues: z.infer<typeof signUpSchema>) => {
+
+    const parsedData = signUpSchema.parse(userDataValues);
     const supabaseServer = await createServerClient();
+    const { data: userNameData, error } = await getAllUsernameWith(userDataValues.username);
+   
+    if (userNameData && userNameData?.length > 0) throw new Error('Username taken already');
 
-    const { data: { user }, error:userError } = await supabaseServer.auth.signUp(userData)
-    console.log(userError);
+    const { data: { user }, error: userError } = await supabaseServer.auth.signUp(parsedData)
+    if (userError) throw userError;
+
     if (user && user.email) {
         const { data, error } = await supabaseServer
             .from('users')
             .insert(
-                [{ id: user.id, email: user.email, username: userData.username }])
+                [{ id: user.id, email: user.email, username: userDataValues.username }])
 
-        console.log("New User: ", user)
+
+        redirect('/')
     }
-    
-    if(userError) throw userError;
 
-    redirect('/')
+
+
 }       
