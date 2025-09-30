@@ -29,7 +29,7 @@ const SignUpForm = () => {
                        {errors.username && <ErrorMessage message={errors.username.message!} />}
                 </fieldset>
                 <fieldset>
-                    <label htmlFor="password">Username</label>
+                    <label htmlFor="password">Password          </label>
                     <input type="password" id="password" {...register('password')} placeholder="Enter your password" />
                        {errors.password && <ErrorMessage message={errors.password.message!} />}
                 </fieldset>

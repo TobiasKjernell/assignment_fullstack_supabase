@@ -1,9 +1,16 @@
-'use client'
-import Comments from "@/components/CommentsModal";
-import { useSinglePost } from "@/hooks/useSinglePost";
+import { getSinglePost } from "../../../../utils/supabase/queries";
+import { createClient } from "../../../../utils/supabase/server-client";
+import PostComments from "@/components/PostComments";
+import DeleteButton from "./DeleteButton";
 
-const SinglePost = ({ params }: { params: Promise<{ slug: string }> }) => {
-    const { data: post } = useSinglePost(params);
+
+const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => {
+    const { slug } = await params;
+    const { data: post } = await getSinglePost(slug)
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const isAuthor = user?.id === post?.user_id ? true : false;
 
     return (
         <>
@@ -15,12 +22,11 @@ const SinglePost = ({ params }: { params: Promise<{ slug: string }> }) => {
                         <p>Created by: {post.users.username}</p>
 
                         <div className="flex justify-between items-center mt-5">
-                            <Comments>
-                                <Comments.Toggle childButtonType={false}>
-                                </Comments.Toggle>
-                                <Comments.List comments={['Top1 Comment', 'Top2 Comment', 'Top3 Comment']} />
-                            </Comments>
+                            <PostComments />
                         </div>
+                        {isAuthor && <div className="flex justify-end">
+                            <DeleteButton postId={post.id} />
+                        </div>}
                     </div>
                 </div>
             }

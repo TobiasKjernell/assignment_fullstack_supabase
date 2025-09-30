@@ -10,6 +10,7 @@ interface ICommentContext {
 const CommentsContext = createContext<ICommentContext | null>(null)
 
 const Comments = ({ children }: { children: ReactNode }) => {
+
     const [showComments, setShowComments] = useState<boolean>(false)
     return <CommentsContext.Provider value={{
         showComments,
@@ -50,6 +51,7 @@ const Item = ({ post }: { post: string }) => {
 }
 
 const Toggle = ({ children, childButtonType }: { children?: ReactNode, childButtonType: boolean }) => {
+
     const { setShowComments, showComments } = useContext(CommentsContext) as ICommentContext;
     const handleClick = () => setShowComments(!showComments);
     return (
@@ -62,6 +64,7 @@ const Toggle = ({ children, childButtonType }: { children?: ReactNode, childButt
 }
 
 const ChildComment = ({ children }: { children: ReactNode }) => {
+
     return <div className="bg-amber-400 pl-5">{children}</div>
 }
 

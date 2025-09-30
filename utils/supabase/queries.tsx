@@ -14,7 +14,7 @@ export const getHomePosts = async (supabase: ReturnType<typeof createClient>) =>
 export const getSinglePost = async (slug: string) => {
     const supabase = createClient();
     return await supabase.from('posts')
-        .select('*, users(username)')
+        .select('*, users(username)')       
         .eq('slug', slug)
         .single();
 }
