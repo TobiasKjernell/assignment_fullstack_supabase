@@ -11,8 +11,8 @@ const Header = () => {
                 <AccountsLinks />
                 {/* <button className="button-tertiary">TEst</button> */}
             </header>
-            <div className="w-[80%] bg-black py-1 m-auto mt-7"></div>
-        </>
+            <div className="w-[80%] background-gold py-2 m-auto mt-7 rounded rounded-b-full"></div>
+        </> 
     )
 }
 

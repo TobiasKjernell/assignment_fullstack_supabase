@@ -9,7 +9,7 @@ const DeleteButton = ({ postId }: { postId: number }) => {
         {
             mutationFn: DeletePost,
             onSettled: () => toast.success('Deleted post!'),
-            onError: () => toast.error("Could not delete post!")
+            onError: () => toast.error("Could not delete post!"),
         },
     );
     return (

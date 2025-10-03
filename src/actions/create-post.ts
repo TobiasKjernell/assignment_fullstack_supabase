@@ -4,19 +4,32 @@ import z from "zod"
 import { postSchema } from "./schemas"
 import { createClient } from "../../utils/supabase/server-client";
 import { slugify } from "../../utils/slugify";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { uploadImage } from "../../utils/supabase/upload-image";
+import { redirect } from "next/navigation";
+
 
 export const CreatePostAction = async (postDataValues: z.infer<typeof postSchema>) => {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser()
     const parsedData = postSchema.parse(postDataValues);
     const slug = slugify(parsedData.title);
+    const supabase = await createClient();
 
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not Authorized')
 
-    await supabase.from('posts').insert([{ user_id: user.id, slug, ...parsedData }]).throwOnError()
+    const { data } = await supabase.from('posts').select('slug').eq('slug', slug).single()
+    if (data?.slug) throw new Error('Post title already taken..')
+
+    const imageFile = postDataValues.images.get('image');
+    if (!(imageFile instanceof File) && imageFile !== null) throw new Error('Malformed image file')
+    const imagePublicUrl = imageFile ? await uploadImage(imageFile) : null;
+
+    await supabase.from
+        ('posts').insert([{ ...parsedData, user_id: user.id, slug, images: imagePublicUrl }]);
+
 
     revalidatePath('/');
     redirect(`/${slug}`);
-}
+
+
+}       

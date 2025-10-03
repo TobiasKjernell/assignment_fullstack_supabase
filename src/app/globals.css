@@ -1,16 +1,33 @@
 @import "tailwindcss";
 
+body {
+  color: #DFB97C;
+  background-color: #222;
+}
+
 @layer components {
 
   .button-primary {
-    @apply bg-red-500 text-white font-bold rounded-2xl py-4 px-8 text-2xl 
+    @apply font-bold rounded-2xl py-4 px-8 text-2xl border-1 border-[#DFB97C] bg-[#222] cursor-pointer
   }
 
   .button-secondary {
-    @apply bg-red-500 text-white font-bold rounded-xl py-2 px-4 text-2xl 
+    @apply font-bold rounded-xl py-2 px-4 text-2xl border-1 border-[#DFB97C] bg-[#222] cursor-pointer
   }
 
   .button-tertiary {
-    @apply bg-gray-600 text-white font-bold rounded-xl p-2 text-2xl 
+    @apply text-[#222] font-bold rounded-xl p-2 text-2xl border-1 border-[#222] bg-[#DFB97C] cursor-pointer
+  }
+
+  .background-gold {
+    background-color: #DFB97C;
+
+    &:hover {
+      background-color: #DFB97C;
+    }
+  }
+
+  .background-dark {
+    background-color: #222;
   }
 }
