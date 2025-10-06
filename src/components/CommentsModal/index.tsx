@@ -34,17 +34,17 @@ const List = ({ comments }: { comments: IComment }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
 
     return (
-        <div className={` ${showComments ? 'max-h-screen' : 'max-h-0'} overflow-hidden transition-all ease-in-out duration-1000 mb-3`}>
+        <div className={` ${showComments ? 'max-h-full' : 'max-h-0'} overflow-hidden `}>
             {comments.comments?.length > 0 &&
                 comments.comments.map((item, index) => <MainComment key={index} post={item} />)}
-        </div>
+        </div>  
     )
-}
+}   
 
 const ChildList = ({ comments }: { comments: IComment }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
     return (
-        <div className={` ${showComments ? 'max-w-full max-h-screen' : 'max-w-0 max-h-0'} overflow-hidden transition-all ease-in duration-200 mb-3`}>
+        <div className={` ${showComments ? 'max-w-full max-h-screen' : 'max-w-0 max-h-0'} overflow-hidden transition-all ease-in duration-200`}>
             {comments.comments?.length > 0 &&
                 comments.comments.map((item, index) => <ChildComment key={index} post={item} />)}
         </div>
@@ -54,14 +54,14 @@ const ChildList = ({ comments }: { comments: IComment }) => {
 const ChildComment = ({ post }: { post: IComment }) => {
     return (
         <div className="flex flex-col">
-            <div className="p-2 my-2 border">{post.post}</div>
+            <div className="p-2 border text-wrap overflow-hidden max-h-30">{post.post}</div>
             <Comments>
                 <ChildParent>
                     <Toggle childButtonType={true} post={post} />
                     <ChildList comments={post} />
                 </ChildParent>
             </Comments >
-        </div > 
+        </div >
     )
 }
 
@@ -69,10 +69,10 @@ const MainComment = ({ post }: { post: IComment }) => {
 
     return (
         <div className="flex flex-col">
-            <div className="p-2 my-2 border ">{post.post}</div>
+            <div className="p-2 border overflow-hidden max-h-30">{post.post}</div>
             <Comments>
                 <MainParent>
-                    <Toggle childButtonType={true} post={post} />   
+                    <Toggle childButtonType={true} post={post} />
                     <ChildList comments={post} />
                 </MainParent>
             </Comments >
@@ -85,18 +85,18 @@ const Toggle = ({ children, childButtonType, post }: { children?: ReactNode, chi
     const { setShowComments, showComments } = useContext(CommentsContext) as ICommentContext;
     const handleClick = () => setShowComments(!showComments);
     return (
-        <div className={`flex gap-2 ${childButtonType ? 'ml-auto' : ''}`}>
+        <div className={`flex gap-2 my-2 ${childButtonType ? 'ml-auto' : ''}`}>
             {children}
-            <button className={`text-sm border-1 ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1'} rounded-sm hover:cursor-pointer`}>Add comment</button>
-            <button disabled={post.comments?.length === 0 ? true : false} onClick={handleClick} className={`text-sm border-1  ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1'} rounded-sm hover:cursor-pointer`}>{showComments  ? 'Hide comment' : `Show comments (${post.comments?.length})`}</button>
+            <button className={`text-nowrap text-sm border-1 ${childButtonType ? 'p-0 px-1 text-xs' : 'px-2'} rounded-sm hover:cursor-pointer`}>Add comment</button>
+            <button disabled={post.comments?.length === 0 ? true : false} onClick={handleClick} className={`text-nowrap text-sm border-1  ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1 '} rounded-sm hover:cursor-pointer`}>{showComments ? `Hide comments (${post.comments?.length})` : `Show comments (${post.comments?.length})`}</button>
         </div>
     )
 }
 
 const ChildParent = ({ children }: { children: ReactNode }) => {
-     const { showComments } = useContext(CommentsContext) as ICommentContext;
-    return <div className={`pl-5 flex flex-col ${showComments ? 'border-l border-dashed' : '' }`}>{children}</div>
-}   
+    const { showComments } = useContext(CommentsContext) as ICommentContext;
+    return <div className={`pl-5 flex flex-col  ${showComments ? 'border-l border-dashed' : ''}`}>{children}</div>
+}
 
 const MainParent = ({ children }: { children: ReactNode }) => {
     return <div className="pl-5 flex flex-col">{children}</div>
