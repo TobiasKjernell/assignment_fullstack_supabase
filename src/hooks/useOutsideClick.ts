@@ -1,4 +1,3 @@
-import { ModuleSource } from "module";
 import { useEffect, useRef } from "react";
 
 export const useOutsideClick = (handler: () => void) => {

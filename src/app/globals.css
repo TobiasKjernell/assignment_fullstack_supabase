@@ -18,7 +18,9 @@ body {
   .button-tertiary {
     @apply text-[#222] font-bold rounded-xl p-2 text-2xl border-1 border-[#222] bg-[#DFB97C] cursor-pointer
   }
-
+ .border-gold {
+    @apply  border-[#DFB97C] border
+  }
   .background-gold {
     background-color: #DFB97C;
 

@@ -9,7 +9,7 @@ import { getAllUsersWithUsername } from "../../utils/supabase/queries";
 
 export const SignUp = async (userDataValues: z.infer<typeof signUpSchema>) => {
 
-    const { data: userNameData, error } = await getAllUsersWithUsername(userDataValues.username);
+    const { data: userNameData } = await getAllUsersWithUsername(userDataValues.username);
     if (userNameData && userNameData?.length > 0) throw new Error('Username already taken');
     
     const parsedData = signUpSchema.parse(userDataValues);
@@ -19,7 +19,7 @@ export const SignUp = async (userDataValues: z.infer<typeof signUpSchema>) => {
     if (userError) throw userError;
 
     if (user && user.email) {
-        const { data, error } = await supabaseServer
+        const { data } = await supabaseServer
             .from('users')
             .insert(
                 [{ id: user.id, email: user.email, username: userDataValues.username }])
