@@ -44,7 +44,7 @@ const List = ({ comments }: { comments: IComment }) => {
 const ChildList = ({ comments }: { comments: IComment }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
     return (
-        <div className={` ${showComments ? 'max-w-full max-h-screen' : 'max-w-0 max-h-0'} overflow-hidden transition-all ease-in duration-200`}>
+        <div className={` ${showComments ? 'max-w-full max-h-full' : 'max-w-0 max-h-0'} overflow-hidden transition-all ease-in duration-200`}>
             {comments.comments?.length > 0 &&
                 comments.comments.map((item, index) => <ChildComment key={index} post={item} />)}
         </div>

@@ -9,6 +9,6 @@ export const DeletePost = async (postId: number) => {
     await supabase.from('posts').
         delete().eq('id', postId).throwOnError();
 
-    revalidatePath('/');
-    redirect('/');
+    revalidatePath('/?page=1');
+    redirect('/?page=1');
 }       

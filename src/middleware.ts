@@ -29,5 +29,6 @@ export const middleware = async (request: NextRequest) => {
         newrUrl.pathname = '/auth/login';
         return NextResponse.redirect(newrUrl);
     }
+
     return supabaseRes;
-}
+}   

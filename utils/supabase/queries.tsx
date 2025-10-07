@@ -1,21 +1,26 @@
 
+import { PAGE_SIZE } from "../constants";
 import { createClient } from "./browser-client";
 import { QueryData } from '@supabase/supabase-js';
 
-export const getHomePosts = async (supabase: ReturnType<typeof createClient>) => {
+export const getHomePosts = async (supabase: ReturnType<typeof createClient>, page: number) => {
+    if (!page) page = 1;
+    const from: number = (page - 1) * PAGE_SIZE;
+    const to: number = from + PAGE_SIZE - 1;
+
 
     return await supabase
         .from('posts')
-        .select('id, title, slug, users(username, email), images, created_at')
-        .order('created_at', { ascending: false })
+        .select('id, title, slug, users(username, email), images, created_at', { count: 'exact' })
+        .order('created_at', { ascending: false }).range(from, to);
 
 }
 
 export const getSinglePost = async (slug: string) => {
     const supabase = createClient();
     return await supabase.from('posts')
-        .select('*, users(username)')       
-        .eq('slug', slug)   
+        .select('*, users(username)')
+        .eq('slug', slug)
         .single();
 }
 
