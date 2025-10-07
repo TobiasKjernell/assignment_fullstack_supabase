@@ -5,7 +5,7 @@ import { useHomePosts } from "../../../hooks/useHomePosts";
 
 
 const HomePosts = ({ posts }: { posts: HomePostsType }) => {
-    const { data, error, isFetching } = useHomePosts(posts);
+    const { data, error, isFetching } = useHomePosts(posts, 2);
 
     if (error) return;
     return (
