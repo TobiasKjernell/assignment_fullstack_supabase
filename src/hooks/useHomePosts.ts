@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getHomePosts, HomePostsType } from "../../utils/supabase/queries";
 import { createClient } from "../../utils/supabase/browser-client";
 
-export const useHomePosts = (posts: HomePostsType) => {
+export const useHomePosts = (posts: HomePostsType, page: number) => {
     const { data, isFetching, error } = useQuery({
         queryKey: ['home-posts'],
         queryFn: async () => {
             const supabase = createClient();
-            const { data, error } = await getHomePosts(supabase)
+            const { data, error } = await getHomePosts(supabase, page)
             if (error) throw error.message;
             return data;
         },
