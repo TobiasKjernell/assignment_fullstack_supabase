@@ -18,17 +18,19 @@ const CreatePost = () => {
         resolver: zodResolver(postWithImageSchema)
     });
 
-    const { mutate, error } = useMutation({
+    const { mutate, error, data } = useMutation({
         mutationFn: CreatePostAction,
         onMutate: () => toast.loading('Creating post...', { id: 1 }),
-        onError: () => toast.error('Check your fields..', { id: 1 }),
-    })
+        onSettled: () => toast.success('Post got posted', { id: 1 })
+    })  
 
     //redirect from action bug with error, tmp fix
     //https://nextjs.org/docs/app/guides/redirecting
     //redirect returns a 307 (Temporary Redirect) status code by default. When used in a Server Action, it returns a 303 (See Other), which is commonly used for redirecting to a success page as a result of a POST request.
-    if (error && !errorMessages.some(err => err === error?.message)) toast.success('Post created successfully', { id: 1 })
+    if (data?.error && errorMessages.some(err => err === data?.error)) toast.error('Post title already taken..', { id: 1 })
   
+
+
     return (
         <form onSubmit={handleSubmit(values => {
             const imageForm = new FormData();
