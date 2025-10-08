@@ -30,7 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased p-8`}
       >
-        <Toaster position="top-center" richColors />
+        <Toaster position="top-center" richColors toastOptions={{
+          style: {
+            background: '#222'
+          }
+        }} />
         <QueryClientProvider>
           <ReactQueryDevtools />
           {children}

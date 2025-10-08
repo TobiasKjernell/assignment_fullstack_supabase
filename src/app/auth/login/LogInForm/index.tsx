@@ -23,12 +23,12 @@ const LogInForm = () => {
             <form onSubmit={handleSubmit(values => mutate((values)))} className="p-4 flex flex-col w-[700px] mx-auto">
                 <fieldset className="flex gap-5">
                     <label htmlFor="email">Enter your email</label>
-                    <input id="email" {...register('email')} placeholder="Enter your email" />
+                    <input autoComplete="off" id="email" {...register('email')} placeholder="Enter your email" />
                     {errors.email && <ErrorMessage message={errors.email.message!} />}
                 </fieldset>
                 <fieldset className="flex gap-5">
                     <label htmlFor="password">Password</label>
-                    <input type="password" id="password" {...register('password')} placeholder="Enter your password" />
+                    <input autoComplete="off" type="password" id="password" {...register('password')} placeholder="Enter your password" />
                     {errors.password && <ErrorMessage message={errors.password.message!} />}
                 </fieldset>
                 <button className="button-secondary w-1/2 m-auto mt-5">Log in!</button>

@@ -3,7 +3,6 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PAGE_SIZE } from "../../../utils/constants";
-import { useEffect } from "react";
 
 
 const Pagination = ({ count }: { count: number }) => {
@@ -29,20 +28,20 @@ const Pagination = ({ count }: { count: number }) => {
     const handlePreviousPage = () => {
         const calc = currentPage === 1 ? currentPage : currentPage - 1;
         const previous = createPageUrl(calc);
-        router.push(previous);        
+        router.push(previous);
     }
 
     return (
         <div className="flex justify-between w-full p-2 border mt-2">
             <div className="flex">
-                Showing 1 to 10 of 24
+                Showing {(currentPage - 1) * PAGE_SIZE + 1} - {currentPage === pageCount ? count : currentPage * PAGE_SIZE} of {count}
             </div>
             <div className="flex gap-2">
-                <button onClick={handlePreviousPage} className="flex hover:text-white cursor-pointer">
+                <button disabled={currentPage === 1} onClick={handlePreviousPage} className="flex hover:text-white cursor-pointer disabled:cursor-not-allowed">
                     <ArrowLeft />
                     <span>Previous</span>
                 </button>
-                <button disabled={currentPage === pageCount} onClick={handleNextPage} className="flex hover:text-white cursor-pointer">
+                <button disabled={currentPage === pageCount} onClick={handleNextPage} className="flex hover:text-white cursor-pointer disabled:cursor-not-allowed">
                     <span>Next</span>
                     <ArrowRight />
                 </button>

@@ -24,7 +24,6 @@ export const SignUp = async (userDataValues: z.infer<typeof signUpSchema>) => {
             .insert(
                 [{ id: user.id, email: user.email, username: userDataValues.username }])
 
-
         redirect('/')
     }
 
