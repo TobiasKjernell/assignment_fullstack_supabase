@@ -14,7 +14,7 @@ export const signUpSchema = z.object({
 export const postSchema = z.object({
     title: z.string().min(3, 'Title must have more than 3 characters'),
     content: z.string().optional(),
-    images: z.instanceof(FormData)
+    images: z.instanceof(FormData).optional()
 })
 
 //refreshing on create/post page return an error (FileList not defined..) - had to go with this solution

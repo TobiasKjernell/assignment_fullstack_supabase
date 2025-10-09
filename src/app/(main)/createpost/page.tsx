@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { DatabaseAction } from "../../../../utils/supabase/helpers";
 
 
 const errorMessages = ['Post title already taken..', 'Malformed image file', 'Not Authorized']
@@ -19,7 +20,7 @@ const CreatePost = () => {
     });
 
     const { mutate, error, data } = useMutation({
-        mutationFn: CreatePostAction,
+        mutationFn:CreatePostAction,
         onMutate: () => toast.loading('Creating post...', { id: 1, style: { color: '#fff' } }),
         onSettled: () => toast.success('Post successfully posted!', { id: 1, style: { color: 'lightgreen' } })
     })

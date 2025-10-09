@@ -7,6 +7,7 @@ import { slugify } from "../../utils/slugify";
 import { revalidatePath } from "next/cache";
 import { uploadImage } from "../../utils/supabase/upload-image";
 import { redirect } from "next/navigation";
+import { DatabaseAction } from "../../utils/supabase/helpers";
 
 
 
@@ -21,7 +22,7 @@ export const CreatePostAction = async (postDataValues: z.infer<typeof postSchema
     const { data } = await supabase.from('posts').select('slug').eq('slug', slug).single()
     if (data?.slug) return { error: 'Post title already taken..' }
 
-    const imageFile = postDataValues.images.get('image');
+    const imageFile = postDataValues.images!.get('image');
     if (!(imageFile instanceof File) && imageFile !== null) return { error: 'Malformed image file' }
     const imagePublicUrl = imageFile ? await uploadImage(imageFile) : null;
 

@@ -5,3 +5,7 @@ export const formatDistanceFromNow = (dateStr:string) =>
     addSuffix: true
   })
  
+export enum DatabaseAction {
+  Create,
+  Edit
+}
