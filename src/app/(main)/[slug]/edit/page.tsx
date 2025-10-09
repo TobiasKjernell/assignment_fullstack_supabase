@@ -9,7 +9,7 @@ const Edit = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
     return (
         <div>
-            {data && <EditForm postId={data.id} defaultValues={{ title: data.title, content: data.content }} />}
+            {data && <EditForm postId={data.id} defaultValues={{ title: data.title, content: data.content, images:data.images }} />}
         </div>
     )
 

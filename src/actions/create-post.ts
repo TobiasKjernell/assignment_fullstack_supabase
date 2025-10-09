@@ -32,6 +32,4 @@ export const CreatePostAction = async (postDataValues: z.infer<typeof postSchema
 
     revalidatePath('/');    
     redirect(`/${slug}`);
-
-
 }       
