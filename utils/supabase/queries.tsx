@@ -35,7 +35,7 @@ export const getComments = async (comments: number[] | null) => {
     const supabase = createClient();
     return await supabase.from('comment')
         .select()
-        .in('id', comments!);
+        .in('id', comments!)
 }
 
 export const getSearchedPosts = async (searchTerm: string, signal: AbortSignal) => {

@@ -38,14 +38,14 @@ const PostComments = ({ post }: { post: SinglePostsType }) => {
         queryKey: ['mainPost'],
         queryFn: async () => {
             const supabase = createClient();
-            const { data, error } = await supabase.from('posts').select('*').eq('id', post.id).single();
+            const { data, error } = await supabase.from('posts').select('*, users(username)').eq('id', post.id).single();
             if (error) throw error.message;
             return data;
         },
 
 
     })
-    
+
     if (error) throw error;
 
     return (
@@ -55,7 +55,7 @@ const PostComments = ({ post }: { post: SinglePostsType }) => {
                 <Comments>
                     <Comments.Toggle childButtonType={false} post={data.comments} />
                     <Comments.CommentForm id={data.id} rootEntity={data.id} />
-                    <Comments.List comments={data.comments!} postId={data.id} />
+                    <Comments.List post={data} />
                 </Comments>
             }
         </>

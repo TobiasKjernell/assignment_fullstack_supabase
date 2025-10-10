@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
-import { SingleCommentType } from "../../../utils/supabase/queries";
+import { SingleCommentType, SinglePostsType } from "../../../utils/supabase/queries";
 
 import { useComments } from "@/hooks/useComments";
 import { useForm } from "react-hook-form";
@@ -37,14 +37,11 @@ const Comments = ({ children }: { children: ReactNode }) => {
 
 }
 
-const List = ({ comments, postId }: { comments: number[], postId: number }) => {
+const List = ({ post }: { post: SinglePostsType }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
-    const { currentComments, error, isFetching } = useComments(comments, postId);
+    const { currentComments, error, isFetching } = useComments(post.comments, 0);
 
-
-    if (error) throw error;
-
-    // console.log(currentComments);
+    console.log(currentComments);
     return (
         <div className={` ${showComments ? 'max-h-full' : 'max-h-0'} overflow-hidden `}>
             {currentComments && currentComments.length > 0 &&
@@ -56,7 +53,7 @@ const List = ({ comments, postId }: { comments: number[], postId: number }) => {
 const ChildList = ({ comments, postId }: { comments: number[], postId: number }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
     const { currentComments, error, isFetching } = useComments(comments, postId);
-    if (!comments) return;
+
     return (
         <div className={` ${showComments ? 'max-w-full max-h-full' : 'max-w-0 max-h-0'} overflow-hidden transition-all ease-in duration-200`}>
             {currentComments && currentComments.length > 0 &&
@@ -82,14 +79,16 @@ const ChildComment = ({ post }: { post: SingleCommentType }) => {
 
 const MainComment = ({ post }: { post: SingleCommentType }) => {
 
+    // const { currentComments, error, isFetching } = useComments(post.replies!, post.id);
     return (
         <div className="flex flex-col">
             <div className="p-2 border overflow-hidden max-h-30">{post.content}</div>
+            <div>{post.id}</div>
             <Comments>
                 <MainParent>
                     <Toggle childButtonType={true} post={post.replies} />
                     <CommentForm id={post.id} />
-                    {post.replies && <ChildList comments={post.replies} postId={post.id} />}
+                    {post.replies && <ChildList comments={post.replies!} postId={post.id} />}
                 </MainParent>
             </Comments >
         </div >
@@ -134,15 +133,21 @@ const CommentForm = ({ id, rootEntity }: { id: number, rootEntity?: number | nul
 
         },
         onSuccess: async () => {
-            setShowTextField(false);        
+            setShowTextField(false);
             console.log(id);
-            if (rootEntity) {           
-                await queryClient.invalidateQueries({ queryKey: ['mainPost'] })
+            if (rootEntity) {
+                // await queryClient.invalidateQueries({ queryKey: ['mainPost'] })
             }
+            //  await queryClient.invalidateQueries({ queryKey: ['comments', id] })
+            await queryClient.invalidateQueries({ queryKey: ['mainPost'] })
 
             const delay = new Promise(res => setTimeout(res, 1000));
             await delay;
-            // 
+            await queryClient.invalidateQueries({ queryKey: ['comments', 0] })
+            await delay
+            await queryClient.invalidateQueries({ queryKey: ['comments', id] })
+            
+
 
         }
     })
