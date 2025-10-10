@@ -17,6 +17,12 @@ export const postSchema = z.object({
     images: z.instanceof(FormData).optional()
 })
 
+export const commentSchema = z.object({
+    content: z.string().max(250).min(5, 'minimi..').optional(),
+    rootEntity: z.number().optional(),
+    childEntity:z.number().optional()   
+})
+
 //refreshing on create/post page return an error (FileList not defined..) - had to go with this solution
 export const postWithImageSchema = postSchema.omit({ images: true })
     .extend({

@@ -24,6 +24,20 @@ export const getSinglePost = async (slug: string) => {
         .single();
 }
 
+export const getSingleComment = async(commentId:number) => {
+     const supabase = createClient();
+    return await supabase.from('comment')
+        .select().eq('id', commentId).single();
+      
+}
+export const getComments = async (comments: number[] | null) => {
+
+    const supabase = createClient();
+    return await supabase.from('comment')
+        .select()
+        .in('id', comments!);
+}
+
 export const getSearchedPosts = async (searchTerm: string, signal: AbortSignal) => {
     const supabase = createClient();
 
@@ -39,3 +53,5 @@ export const getAllUsersWithUsername = async (name: string) => {
 
 export type HomePostsType = QueryData<ReturnType<typeof getHomePosts>>
 export type SinglePostsType = QueryData<ReturnType<typeof getSinglePost>> 
+export type CommentType = QueryData<ReturnType<typeof getComments>>
+export type SingleCommentType = QueryData<ReturnType<typeof getSingleComment>>

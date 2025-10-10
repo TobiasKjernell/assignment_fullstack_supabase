@@ -30,6 +30,6 @@ export const CreatePostAction = async (postDataValues: z.infer<typeof postSchema
         ('posts').insert([{ ...parsedData, user_id: user.id, slug, images: imagePublicUrl }]);
 
 
-    revalidatePath('/');    
+    revalidatePath('/');
     redirect(`/${slug}`);
 }       

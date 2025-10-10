@@ -26,7 +26,7 @@ const LogInForm = () => {
                     <input autoComplete="off" id="email" {...register('email')} placeholder="Enter your email" />
                     {errors.email && <ErrorMessage message={errors.email.message!} />}
                 </fieldset>
-                <fieldset className="flex gap-5">
+                <fieldset className="flex gap-5">   
                     <label htmlFor="password">Password</label>
                     <input autoComplete="off" type="password" id="password" {...register('password')} placeholder="Enter your password" />
                     {errors.password && <ErrorMessage message={errors.password.message!} />}

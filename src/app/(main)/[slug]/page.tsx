@@ -3,6 +3,7 @@ import { createClient } from "../../../../utils/supabase/server-client";
 import PostComments from "@/components/PostComments";
 import DeleteButton from "./DeleteButton";
 import Image from "next/image";
+import EditButton from "./EditButton";
 
 
 const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => {
@@ -10,7 +11,7 @@ const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => 
     const { data: post } = await getSinglePost(slug)
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-
+    
     const isAuthor = user?.id === post?.user_id ? true : false;
 
     return (
@@ -25,10 +26,11 @@ const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => 
                     </div>
                     <p className="text-sm py-5">Created by: {post.users.username}</p>
 
-                    <div className=" mt-5">
-                        <PostComments />
+                    <div className=" mt-5">         
+                        <PostComments post={post} />    
                     </div>
-                    {isAuthor && <div className="flex justify-end">
+                    {isAuthor && <div className="flex justify-end gap-2">
+                        <EditButton slug={post.slug} />
                         <DeleteButton postId={post.id} />
                     </div>}
                 </div>

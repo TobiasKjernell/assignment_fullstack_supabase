@@ -1,4 +1,5 @@
 'use client'
+
 import { signUpSchema } from "@/actions/schemas";
 import { SignUp } from "@/actions/sign-up";
 import ErrorMessage from "@/components/ErrorMessage";
@@ -14,7 +15,7 @@ const SignUpForm = () => {
     const { mutate, error, data } = useMutation({
         mutationFn: SignUp
     })
-
+    
     return (
         <>
             <form onSubmit={handleSubmit(value => mutate(value))} className="p-4 flex flex-col w-[700px] mx-auto">

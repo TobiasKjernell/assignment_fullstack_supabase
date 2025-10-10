@@ -37,7 +37,6 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
             if (values.images && values.images.length > 0 && typeof values.images !== 'string') {
                 imageForm = new FormData();
                 imageForm.append('image', values.images[0]);
-                console.log('yep')
             }
 
             mutate({

@@ -1,9 +1,11 @@
 'use client'
 
+import Link from "next/link";
 
-const EditButton = ({ postId }: { postId: number }) => {
+
+const EditButton = ({slug}:{slug:string}) => {
     return (
-        <button className="button-secondary">Edit Post</button>
+        <Link href={`/${slug}/edit`} className="button-secondary">Edit Post</Link>
     )
 }
 
