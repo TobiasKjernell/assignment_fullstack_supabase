@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { getComments } from "../../utils/supabase/queries";
+import { CommentRow } from "../../utils/supabase/helpers";
 
-export const useComments = (commentsArray: number[] | null, id: number) => {
-    if (commentsArray === null) commentsArray = []
-
+export const useComments = ( id: number) => {
+    
     const { data: currentComments, isFetching, error } = useQuery({
         queryKey: ['comments', id],
         queryFn: async () => {
-            const { data, error } = await getComments(commentsArray)
+            const { data, error } = await getComments(id, CommentRow.rootComment)
             const ok = data?.sort((a, b) => a.id > b.id ? 1 : -1)
-            console.log(commentsArray);     
+
             if (error) throw error.message;
             return ok;
         },

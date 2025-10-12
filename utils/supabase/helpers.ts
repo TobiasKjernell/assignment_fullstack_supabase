@@ -5,7 +5,7 @@ export const formatDistanceFromNow = (dateStr:string) =>
     addSuffix: true
   })
  
-export enum DatabaseAction {
-  Create,
-  Edit
+export enum CommentRow {
+  rootPost = 'rootPost',
+  rootComment = 'rootComment'
 }

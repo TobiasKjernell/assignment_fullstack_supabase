@@ -19,8 +19,8 @@ export const postSchema = z.object({
 
 export const commentSchema = z.object({
     content: z.string().max(250).min(5, 'minimi..').optional(),
-    rootEntity: z.number().optional(),
-    childEntity:z.number().optional()   
+    rootPost: z.number().optional(),
+    rootComment:z.number().optional()   
 })
 
 //refreshing on create/post page return an error (FileList not defined..) - had to go with this solution

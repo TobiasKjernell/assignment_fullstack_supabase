@@ -2,6 +2,7 @@
 import { PAGE_SIZE } from "../constants";
 import { createClient } from "./browser-client";
 import { QueryData } from '@supabase/supabase-js';
+import { CommentRow } from "./helpers";
 
 export const getHomePosts = async (supabase: ReturnType<typeof createClient>, page: number) => {
     if (!page) page = 1;
@@ -24,18 +25,19 @@ export const getSinglePost = async (slug: string) => {
         .single();
 }
 
-export const getSingleComment = async(commentId:number) => {
-     const supabase = createClient();
+export const getSingleComment = async (commentId: number) => {
+    const supabase = createClient();
     return await supabase.from('comment')
         .select().eq('id', commentId).single();
-      
+
 }
-export const getComments = async (comments: number[] | null) => {
+
+export const getComments = async (commentId: number, row: CommentRow) => {
 
     const supabase = createClient();
     return await supabase.from('comment')
-        .select()
-        .in('id', comments!)
+        .select('*').eq(row, commentId)
+
 }
 
 export const getSearchedPosts = async (searchTerm: string, signal: AbortSignal) => {
@@ -52,6 +54,6 @@ export const getAllUsersWithUsername = async (name: string) => {
 }
 
 export type HomePostsType = QueryData<ReturnType<typeof getHomePosts>>
-export type SinglePostsType = QueryData<ReturnType<typeof getSinglePost>> 
+export type SinglePostsType = QueryData<ReturnType<typeof getSinglePost>>
 export type CommentType = QueryData<ReturnType<typeof getComments>>
 export type SingleCommentType = QueryData<ReturnType<typeof getSingleComment>>

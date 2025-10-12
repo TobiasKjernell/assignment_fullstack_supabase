@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
-import { SingleCommentType, SinglePostsType } from "../../../utils/supabase/queries";
+import { CommentType, SingleCommentType, SinglePostsType } from "../../../utils/supabase/queries";
 
 import { useComments } from "@/hooks/useComments";
 import { useForm } from "react-hook-form";
@@ -37,65 +37,74 @@ const Comments = ({ children }: { children: ReactNode }) => {
 
 }
 
-const List = ({ post }: { post: SinglePostsType }) => {
+const List = ({ headComments }: { headComments: CommentType }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
-    const { currentComments, error, isFetching } = useComments(post.comments, 0);
 
-    console.log(currentComments);
+    // console.log(currentComments);
     return (
         <div className={` ${showComments ? 'max-h-full' : 'max-h-0'} overflow-hidden `}>
-            {currentComments && currentComments.length > 0 &&
-                currentComments.map((item, index) => <MainComment key={index} post={item} />)}
+            {headComments && headComments.length > 0 &&
+                headComments.map((item, index) => <MainComment key={index} comment={item} />)}
         </div>
     )
 }
 
-const ChildList = ({ comments, postId }: { comments: number[], postId: number }) => {
+const ChildList = ({ postId }: { postId: number }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
-    const { currentComments, error, isFetching } = useComments(comments, postId);
+    const { currentComments, error, isFetching } = useComments(postId);
 
     return (
         <div className={` ${showComments ? 'max-w-full max-h-full' : 'max-w-0 max-h-0'} overflow-hidden transition-all ease-in duration-200`}>
             {currentComments && currentComments.length > 0 &&
-                currentComments.map((item, index) => <ChildComment key={index} post={item} />)}
+                currentComments.map((item, index) => <ChildComment key={index} comment={item} />)}
         </div>
     )
 }
 
-const ChildComment = ({ post }: { post: SingleCommentType }) => {
+const ChildComment = ({ comment }: { comment: SingleCommentType }) => {
+    const { currentComments, error, isFetching } = useComments(comment.id);
+    if (error) return null;
     return (
-        <div className="flex flex-col">
-            <div className="p-2 border text-wrap overflow-hidden max-h-30">{post.content}</div>
-            <Comments>
-                <ChildParent>
-                    <Toggle childButtonType={true} post={post.replies} />
-                    <CommentForm id={post.id} />
-                    {post.replies && <ChildList comments={post.replies} postId={post.id} />}
-                </ChildParent>
-            </Comments >
-        </div >
+        <>
+            {currentComments &&
+                <div className="flex flex-col">
+                    <div className="p-2 border text-wrap overflow-hidden max-h-30">{comment.content}</div>
+                    <Comments>
+                        <ChildParent>
+                            <Toggle childButtonType={true} amountOfComments={currentComments!.length} />
+                            <CommentForm id={comment.id} rootComment={comment.id} />
+                            {currentComments && <ChildList postId={comment.id} />}
+                        </ChildParent>
+                    </Comments >
+                </div >
+            }
+        </>
     )
 }
 
-const MainComment = ({ post }: { post: SingleCommentType }) => {
+const MainComment = ({ comment }: { comment: SingleCommentType }) => {
 
-    // const { currentComments, error, isFetching } = useComments(post.replies!, post.id);
+    const { currentComments, error, isFetching } = useComments(comment.id);
     return (
-        <div className="flex flex-col">
-            <div className="p-2 border overflow-hidden max-h-30">{post.content}</div>
-            <div>{post.id}</div>
-            <Comments>
-                <MainParent>
-                    <Toggle childButtonType={true} post={post.replies} />
-                    <CommentForm id={post.id} />
-                    {post.replies && <ChildList comments={post.replies!} postId={post.id} />}
-                </MainParent>
-            </Comments >
-        </div >
+        <>
+            {currentComments &&
+                <div className="flex flex-col">
+                    <div className="p-2 border overflow-hidden max-h-30">{comment.content}</div>
+                    <div>{comment.id}</div>
+                    <Comments>
+                        <MainParent>
+                            <Toggle childButtonType={true} amountOfComments={currentComments!.length} />
+                            <CommentForm id={comment.id} rootComment={comment.id} />
+                            {currentComments && <ChildList postId={comment.id} />}
+                        </MainParent>
+                    </Comments >
+                </div >
+            }
+        </>
     )
 }
 
-const Toggle = ({ children, childButtonType, post }: { children?: ReactNode, childButtonType: boolean, post: number[] | null }) => {
+const Toggle = ({ children, childButtonType, amountOfComments }: { children?: ReactNode, childButtonType: boolean, amountOfComments: number | null }) => {
 
     const { setShowComments, showComments, showTextField, setShowTextField } = useContext(CommentsContext) as ICommentContext;
     const handleShowTextField = () => setShowTextField(!showTextField);
@@ -105,7 +114,7 @@ const Toggle = ({ children, childButtonType, post }: { children?: ReactNode, chi
         <div className={`flex gap-2 my-2 ${childButtonType ? 'ml-auto' : ''}`}>
             {children}
             <button onClick={handleShowTextField} className={`text-nowrap text-sm border-1 ${childButtonType ? 'p-0 px-1 text-xs' : 'px-2'} rounded-sm hover:cursor-pointer`}>Add comment</button>
-            <button disabled={!post || post.length === 0 ? true : false} onClick={handleShowComments} className={`text-nowrap text-sm border-1  ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1 '} rounded-sm hover:cursor-pointer`}>{showComments ? `Hide comments (${post?.length})` : `Show comments (${post?.length ?? 0})`}</button>
+            <button disabled={!amountOfComments || amountOfComments === 0 ? true : false} onClick={handleShowComments} className={`text-nowrap text-sm border-1  ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1 '} rounded-sm hover:cursor-pointer`}>{showComments ? `Hide comments (${amountOfComments})` : `Show comments (${amountOfComments ?? 0})`}</button>
         </div>
     )
 }
@@ -119,9 +128,9 @@ const MainParent = ({ children }: { children: ReactNode }) => {
     return <div className="pl-5 flex flex-col">{children}</div>
 }
 
-const CommentForm = ({ id, rootEntity }: { id: number, rootEntity?: number | null }) => {
+const CommentForm = ({ id, rootComment, rootPost }: { id: number, rootComment?: number | null, rootPost?: number | null }) => {
 
-    const { showTextField, setShowTextField } = useContext(CommentsContext) as ICommentContext;
+    const { showTextField, setShowTextField, setShowComments } = useContext(CommentsContext) as ICommentContext;
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(commentSchema)
     })
@@ -134,21 +143,16 @@ const CommentForm = ({ id, rootEntity }: { id: number, rootEntity?: number | nul
         },
         onSuccess: async () => {
             setShowTextField(false);
-            console.log(id);
-            if (rootEntity) {
-                // await queryClient.invalidateQueries({ queryKey: ['mainPost'] })
+            setShowComments(true);
+            if (rootPost) {
+                await queryClient.invalidateQueries({ queryKey: ['mainPost'] })
+                console.log('uhmm?')
             }
-            //  await queryClient.invalidateQueries({ queryKey: ['comments', id] })
-            await queryClient.invalidateQueries({ queryKey: ['mainPost'] })
+            if (rootComment) {
 
-            const delay = new Promise(res => setTimeout(res, 1000));
-            await delay;
-            await queryClient.invalidateQueries({ queryKey: ['comments', 0] })
-            await delay
-            await queryClient.invalidateQueries({ queryKey: ['comments', id] })
-            
-
-
+                console.log('ep')
+                await queryClient.invalidateQueries({ queryKey: ['comments', id] })
+            }
         }
     })
 
@@ -156,7 +160,7 @@ const CommentForm = ({ id, rootEntity }: { id: number, rootEntity?: number | nul
         <>
             {error && <div>{error.message}</div>}
             {showTextField &&
-                <form onSubmit={handleSubmit(values => mutate({ content: values.content, rootEntity: rootEntity!, childEntity: id }))} className="w-full p-4 ">
+                <form onSubmit={handleSubmit(values => mutate({ content: values.content, rootComment: rootComment!, rootPost: rootPost! }))} className="w-full p-4 ">
                     <fieldset className="flex flex-col">
                         <label htmlFor="comment">Your comment:</label>
                         <textarea className="border h-50 p-2" id="content" {...register('content')} placeholder="Write your comment..." />

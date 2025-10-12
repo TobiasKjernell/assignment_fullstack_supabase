@@ -1,10 +1,10 @@
 'use client'
-
-import { useComments } from "@/hooks/useComments";
 import Comments from "../CommentsModal";
 import { useQuery } from "@tanstack/react-query";
-import { SinglePostsType } from "../../../utils/supabase/queries";
+import { getComments, SinglePostsType } from "../../../utils/supabase/queries";
 import { createClient } from "../../../utils/supabase/browser-client";
+import { Pinyon_Script } from "next/font/google";
+import { CommentRow } from "../../../utils/supabase/helpers";
 
 // const fakeComment: IComment = {
 //     id: "2",
@@ -34,15 +34,15 @@ import { createClient } from "../../../utils/supabase/browser-client";
 // }
 
 const PostComments = ({ post }: { post: SinglePostsType }) => {
+
     const { data, error } = useQuery({
         queryKey: ['mainPost'],
         queryFn: async () => {
-            const supabase = createClient();
-            const { data, error } = await supabase.from('posts').select('*, users(username)').eq('id', post.id).single();
+            const { data, error } = await getComments(post.id, CommentRow.rootPost)
             if (error) throw error.message;
+            console.log(data);
             return data;
         },
-
 
     })
 
@@ -53,9 +53,9 @@ const PostComments = ({ post }: { post: SinglePostsType }) => {
             {
                 data &&
                 <Comments>
-                    <Comments.Toggle childButtonType={false} post={data.comments} />
-                    <Comments.CommentForm id={data.id} rootEntity={data.id} />
-                    <Comments.List post={data} />
+                    <Comments.Toggle childButtonType={false} amountOfComments={data.length} />
+                    <Comments.CommentForm id={post.id} rootPost={post.id} />
+                    <Comments.List headComments={data} />
                 </Comments>
             }
         </>
