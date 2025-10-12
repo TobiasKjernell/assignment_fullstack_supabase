@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateCommentAction } from "@/actions/create-comment";
 import { toast } from "sonner";
 import { DeleteComment } from "@/actions/delete-comment";
+import { formatDistanceFromNow } from "../../../utils/supabase/helpers";
 
 
 interface ICommentContext {
@@ -63,26 +64,28 @@ const ChildList = ({ parentCommentId, user, isPostOwner }: { parentCommentId: nu
 
 const ChildComment = ({ comment, parentId, user, isPostOwner }: { comment: SingleCommentType, parentId: number, user: GetUser, isPostOwner: boolean }) => {
     const { currentComments, error, isFetching } = useComments(comment.id);
-     let commentsToDelete: number[] = []
+    let commentsToDelete: number[] = []
     if (currentComments && currentComments.length > 1) commentsToDelete = [...currentComments.map(el => el.id), comment.id]
     else commentsToDelete = [comment.id];
     if (error) return null;
     return (
-        <>  
+        <>
             {currentComments &&
                 <div className="flex flex-col">
-                    {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={parentId} isMainPostComment={false} />}
-                    <div className="p-2 border overflow-hidden min-h-30"><p className="text-amber-100 break-words">{comment.content}</p></div>  
-                    <Comments>  
+                    {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={parentId} isMainPostComment={false} amount={currentComments.length} />}
+                    <div className="p-2 border overflow-hidden max-h-30"><p className="text-amber-100 break-words">{comment.content}</p></div>
+                    <Comments>
                         <ChildParent>
-                            <Toggle childButtonType={true} amountOfComments={currentComments!.length} />
+                            <Toggle childButtonType={true} amountOfComments={currentComments!.length}>
+                                <div className="text-xs">Created by: {comment.users.username} ({formatDistanceFromNow(comment.created_at)})</div>
+                            </Toggle>
                             <CommentForm id={comment.id} rootComment={comment.id} />
                             {currentComments && <ChildList parentCommentId={comment.id} user={user} isPostOwner={isPostOwner} />}
                         </ChildParent>
                     </Comments >
                 </div >
             }
-        </> 
+        </>
     )
 }
 
@@ -97,11 +100,13 @@ const MainComment = ({ comment, user, isPostOwner }: { comment: SingleCommentTyp
         <>
             {currentComments &&
                 <div className="flex flex-col">
-                    {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={0} isMainPostComment={true} />}
-                    <div className="p-2 border overflow-hidden min-h-30"><p className="text-amber-100 break-words">{comment.content}</p></div>
+                    {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={0} isMainPostComment={true} amount={currentComments.length} />}
+                    <div className="p-2 border overflow-hidden max-h-30"><p className="text-amber-100 break-words">{comment.content}</p></div>
                     <Comments>
                         <MainParent>
-                            <Toggle childButtonType={true} amountOfComments={currentComments!.length} />
+                            <Toggle childButtonType={true} amountOfComments={currentComments!.length}>
+                                <div className="text-xs">Created by: {comment.users.username} ({formatDistanceFromNow(comment.created_at)})</div>
+                            </Toggle>
                             <CommentForm id={comment.id} rootComment={comment.id} />
                             {currentComments && <ChildList parentCommentId={comment.id} user={user} isPostOwner={isPostOwner} />}
                         </MainParent>
@@ -113,19 +118,21 @@ const MainComment = ({ comment, user, isPostOwner }: { comment: SingleCommentTyp
 }
 
 const Toggle = ({ children, childButtonType, amountOfComments }: { children?: ReactNode, childButtonType: boolean, amountOfComments: number | null }) => {
-
     const { setShowComments, showComments, showTextField, setShowTextField } = useContext(CommentsContext) as ICommentContext;
     const handleShowTextField = () => setShowTextField(!showTextField);
     const handleShowComments = () => setShowComments(!showComments);
 
     return (
-        <div className={`flex gap-2 my-2 ${childButtonType ? 'ml-auto' : ''}`}>
+        <div className="flex justify-between">
             {children}
-            <button onClick={handleShowTextField} className={`text-nowrap text-sm border-1 ${childButtonType ? 'p-0 px-1 text-xs' : 'px-2'} rounded-sm hover:cursor-pointer`}>Add comment</button>
-            <button disabled={!amountOfComments || amountOfComments === 0 ? true : false} onClick={handleShowComments} className={`text-nowrap text-sm border-1  ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1 '} rounded-sm hover:cursor-pointer`}>{showComments ? `Hide comments (${amountOfComments})` : `Show comments (${amountOfComments ?? 0})`}</button>
+            <div className={`flex gap-2 my-2 ${childButtonType ? 'ml-auto' : ''}`}>
+                <button onClick={handleShowTextField} className={`text-nowrap text-sm border-1 ${childButtonType ? 'p-0 px-1 text-xs' : 'px-2'} rounded-sm hover:cursor-pointer`}>{showTextField ? 'Cancel comment' : 'Add comment'}</button>
+                <button disabled={!amountOfComments || amountOfComments === 0 ? true : false} onClick={handleShowComments} className={`text-nowrap text-sm border-1  ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1 '} rounded-sm hover:cursor-pointer`}>{showComments ? `Hide comments (${amountOfComments})` : `Show comments (${amountOfComments ?? 0})`}</button>
+            </div>
         </div>
+
     )
-}   
+}
 
 const ChildParent = ({ children }: { children: ReactNode }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
@@ -133,11 +140,11 @@ const ChildParent = ({ children }: { children: ReactNode }) => {
 }
 
 const MainParent = ({ children }: { children: ReactNode }) => {
-        const { showComments } = useContext(CommentsContext) as ICommentContext;
+    const { showComments } = useContext(CommentsContext) as ICommentContext;
     return <div className={`pl-5 flex flex-col  ${showComments ? 'border-l border-dashed' : ''}`}>{children}</div>
 }
 
-const DeleteButton = ({ commentId, parentId, isMainPostComment }: { commentId: number[], parentId: number, isMainPostComment: boolean }) => {
+const DeleteButton = ({ commentId, parentId, isMainPostComment, amount }: { commentId: number[], parentId: number, isMainPostComment: boolean, amount: number }) => {
     const queryClient = useQueryClient();
     const { mutate } = useMutation(
         {
@@ -145,13 +152,10 @@ const DeleteButton = ({ commentId, parentId, isMainPostComment }: { commentId: n
             onError: () => toast.error("Could not delete comment!"),
             onSuccess: async () => {
                 toast.success('Deleted comment!')
-
-                if (isMainPostComment) {
+                if (isMainPostComment)
                     await queryClient.invalidateQueries({ queryKey: ['mainPost'] })
-                }
                 if (parentId)
                     await queryClient.invalidateQueries({ queryKey: ['comments', parentId] })
-
             },
         },
     );

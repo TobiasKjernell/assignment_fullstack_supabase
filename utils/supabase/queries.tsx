@@ -28,7 +28,7 @@ export const getSinglePost = async (slug: string) => {
 export const getSingleComment = async (commentId: number) => {
     const supabase = createClient();
     return await supabase.from('comment')
-        .select().eq('id', commentId).single();
+        .select('*, users(username)').eq('id', commentId).single();
 
 }
 
@@ -36,7 +36,7 @@ export const getComments = async (commentId: number, row: CommentRow) => {
 
     const supabase = createClient();
     return await supabase.from('comment')
-        .select('*').eq(row, commentId)
+        .select('*, users(username)').eq(row, commentId)
 
 }
 
