@@ -53,7 +53,13 @@ export const getAllUsersWithUsername = async (name: string) => {
     return supabase.from('users').select('*').ilike('username', `%${name}`);
 }
 
+export const getUser = async() => {
+       const supabase = await createClient();
+        return await supabase.auth.getUser();
+}
+
 export type HomePostsType = QueryData<ReturnType<typeof getHomePosts>>
 export type SinglePostsType = QueryData<ReturnType<typeof getSinglePost>>
 export type CommentType = QueryData<ReturnType<typeof getComments>>
 export type SingleCommentType = QueryData<ReturnType<typeof getSingleComment>>
+export type GetUser = QueryData<ReturnType<typeof getUser>>

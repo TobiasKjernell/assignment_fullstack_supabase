@@ -10,9 +10,9 @@ const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => 
     const { slug } = await params;
     const { data: post } = await getSinglePost(slug)
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data:userAuth } = await supabase.auth.getUser();
     
-    const isAuthor = user?.id === post?.user_id ? true : false;
+    const isAuthor = userAuth.user?.id === post?.user_id ? true : false;
 
     return (
         <>
@@ -27,7 +27,7 @@ const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => 
                     <p className="text-sm py-5">Created by: {post.users.username}</p>
 
                     <div className=" mt-5">         
-                        <PostComments post={post} />    
+                        <PostComments post={post} user={userAuth} />    
                     </div>
                     {isAuthor && <div className="flex justify-end gap-2">
                         <EditButton slug={post.slug} />

@@ -7,9 +7,6 @@ import { slugify } from "../../utils/slugify";
 import { revalidatePath } from "next/cache";
 import { uploadImage } from "../../utils/supabase/upload-image";
 import { redirect } from "next/navigation";
-import { DatabaseAction } from "../../utils/supabase/helpers";
-
-
 
 export const CreatePostAction = async (postDataValues: z.infer<typeof postSchema>) => {
     const parsedData = postSchema.parse(postDataValues);

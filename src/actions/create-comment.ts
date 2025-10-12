@@ -19,31 +19,5 @@ export const CreateCommentAction = async (commentData: z.infer<typeof commentSch
             const { data, error } = await supabase.from('comment').insert([{ content: parsedData.content, rootComment: parsedData.rootComment, user_id: user.id }]);
         if (error) return { error: error.message };
     }
-    //skickar upp egen
-    // const { data, error } = await supabase.from('comment').insert([{ content: parsedData.content, rootEntity: parsedData.rootEntity, user_id: user.id }]).select().single();
-
-    // if (error) throw error;
-
-    // if (parsedData.rootPost) {
-    //     const { data: currentPostComments, error } = await supabase.from('posts').select('comments').eq('id', parsedData.rootPost).single();
-    //     if (error) throw error;
-
-    //     if (currentPostComments.comments)
-    //         updateArray = [...currentPostComments.comments!, data.id]
-    //     else updateArray = [data.id]
-
-    //     await supabase.from('posts').update({ comments: updateArray }).eq('id', parsedData.rootEntity).throwOnError()
-    // }
-    // else {
-
-    //     const { data: currentPostComments, error } = await supabase.from('comment').select('replies').eq('id', parsedData.childEntity!).single();
-
-    //     if (currentPostComments?.replies)   
-    //         updateArray = [...currentPostComments.replies, data.id,]
-    //     else updateArray = [data.id]
-
-    //     console.log(parsedData.childEntity)
-    //     await supabase.from('comment').update({ replies: updateArray }).eq('id', parsedData.childEntity!).throwOnError();
-
-    // }
+  
 }

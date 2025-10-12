@@ -8,10 +8,10 @@ export const useComments = ( id: number) => {
         queryKey: ['comments', id],
         queryFn: async () => {
             const { data, error } = await getComments(id, CommentRow.rootComment)
-            const ok = data?.sort((a, b) => a.id > b.id ? 1 : -1)
+            const orderFix = data?.sort((a, b) => a.id > b.id ? 1 : -1)
 
             if (error) throw error.message;
-            return ok;
+            return orderFix;
         },
 
         // staleTime: 10000
