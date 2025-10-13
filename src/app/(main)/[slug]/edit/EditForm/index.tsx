@@ -51,7 +51,7 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
 
         )} className="p-4 flex flex-col w-[700px] mx-auto shadow-2xl shadow-black my-[50] rounded-2xl">
 
-            {defaultValues.images && <Image src={defaultValues.images} height={100} width={100} alt="image" />}
+            {/* {defaultValues.images && <Image src={defaultValues.images} height={100} width={100} alt="image" />} */}
             <fieldset className="flex gap-3">
                 <label className="font-bold" htmlFor="title">Post title:</label>
                 <div className="flex gap-3">
