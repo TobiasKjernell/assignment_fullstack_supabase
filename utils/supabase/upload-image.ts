@@ -2,16 +2,17 @@ import { v4 as uuid } from 'uuid'
 import { createClient } from './server-client';
 
 
-export const uploadImage = async (image: File): Promise<string> => {
+export const uploadImages = async (images: File[]): Promise<string[]> => {
     const supabase = await createClient();
-    const imageName = image.name.split('.');
-    const path = `${image.name[0]}-${uuid()}.${imageName[1]}`;
-    console.log('image size:',image.size);
-    if(image.size > 2000000) throw new Error('image file too big.')
-    const { data, error } = await supabase.storage.from('images').upload(path, image);
-    if (error) throw error;
 
-    const { data: { publicUrl }} = supabase.storage.from('images').getPublicUrl(data.path);
+    const names = images.map(async (file) => {
+        const imageName = file.name.split('.');
+        const path = `${file.name[0]}-${uuid()}.${imageName[1]}`;
+        const { data, error } = await supabase.storage.from('images').upload(path, file);
+        if (error) throw error;
+        const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
+        return publicUrl;
+    })
 
-    return publicUrl;
-}
+    return await Promise.all(names);
+}   

@@ -204,7 +204,7 @@ const CommentForm = ({ id, rootComment, rootPost }: { id: number, rootComment?: 
         </>
     )
 }
-
+    
 Comments.CommentForm = CommentForm;
 Comments.List = List;
 Comments.ChildList = ChildList;
