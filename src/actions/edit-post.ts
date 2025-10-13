@@ -17,13 +17,13 @@ export const EditPost = async ({ postId, updatedData }: { postId: number, update
     if (!user || user.id !== post?.user_id) return { error: 'Not Authorised' }
     if (error) return { error: error.message }
 
-    const imageFile = updatedData.images?.get('image');
+    const imageFile = updatedData.images?.getAll('image');
     let imagePublicUrl;     
 
     if ((typeof imageFile !== 'string') && imageFile !== undefined) {
         if (!(imageFile instanceof File) && imageFile !== null) return { error: 'Malformed image file' }
 
-        imagePublicUrl = await uploadImages(imageFile!);
+        imagePublicUrl = await uploadImages(imageFile as File[]);
     } else { imagePublicUrl = imageFile }
 
     const { data: updatedPost, error: updateError } = await supabase.from('posts').update({ ...parsedData, images: imagePublicUrl, slug: slugify(parsedData.title) }).eq('id', postId).select('slug').single();
