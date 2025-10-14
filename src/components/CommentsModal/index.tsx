@@ -11,6 +11,7 @@ import { CreateCommentAction } from "@/actions/create-comment";
 import { toast } from "sonner";
 import { DeleteComment } from "@/actions/delete-comment";
 import { formatDistanceFromNow } from "../../../utils/supabase/helpers";
+import ErrorMessage from "../ErrorMessage";
 
 interface ICommentContext {
     showComments: boolean,
@@ -183,6 +184,7 @@ const CommentForm = ({ id, rootComment, rootPost }: { id: number, rootComment?: 
 
         },
         onSuccess: async () => {
+            if(error?.message) return;
             setShowTextField(false);
             setShowComments(true);
 
@@ -202,6 +204,7 @@ const CommentForm = ({ id, rootComment, rootPost }: { id: number, rootComment?: 
                     <fieldset className="flex flex-col">
                         <label htmlFor="comment">Your comment:</label>
                         <textarea className="border h-50 p-2" id="content" {...register('content')} placeholder="Write your comment..." />
+                        {errors.content?.message &&  <ErrorMessage message={errors.content.message}/>}
                     </fieldset>
                     <button className="rounded-sm hover:cursor-pointer text-nowrap text-sm border p-1 mt-1">Post comment</button>
                 </form>
