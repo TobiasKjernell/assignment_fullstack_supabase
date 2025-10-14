@@ -13,7 +13,7 @@ import { useState } from "react";
 
 
 const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pick<Tables<'posts'>, 'title' | 'content' | 'images'> }) => {
-    const [imageName, setImageName] = useState<string>('');
+    const [imageName, setImageName] = useState<string[]>([]);
     const { register, handleSubmit, formState: { errors: zodErrors } } = useForm({
         resolver: zodResolver(postWithImageSchema),
         defaultValues: {
@@ -31,12 +31,13 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
     if (data?.error) toast.error(data.error);
 
     return (
-        <form onSubmit={handleSubmit(values => {        
-            let imageForm = undefined;
+        <form onSubmit={handleSubmit(values => {
+            let imageForm: undefined | FormData = undefined;
 
-            if (values.images && values.images.length > 0 && typeof values.images !== 'string') {
+            if (values.images && values.images.length > 0 && values.images.every(item => typeof item !== 'string')) {
                 imageForm = new FormData();
-                imageForm.append('image', values.images[0]);
+                values.images.forEach(item => imageForm!.append('image', item))
+                // imageForm.append('image', values.images[0]);
             }
 
             mutate({
@@ -50,8 +51,9 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
         }
 
         )} className="p-4 flex flex-col w-[700px] mx-auto shadow-2xl shadow-black my-[50] rounded-2xl">
-
-            {/* {defaultValues.images && <Image src={defaultValues.images} height={100} width={100} alt="image" />} */}
+            <div className="flex gap-5 p-5">    
+            {defaultValues.images && defaultValues.images.map(item => <Image key={item} src={item} height={100} width={100} alt="image" />)}
+            </div>
             <fieldset className="flex gap-3">
                 <label className="font-bold" htmlFor="title">Post title:</label>
                 <div className="flex gap-3">
@@ -67,10 +69,10 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
             <fieldset className="mt-2 flex items-center gap-2">
                 <label className="font-bold cursor-pointer border p-1 text-nowrap" htmlFor="file">Update image?</label>
                 <div className="flex flex-col">
-                    {imageName && <div className="underline ">{imageName}</div>}
+                   {imageName && imageName.map((file, index) => <div key={index + file} className="underline">{file}</div>)}
                     {zodErrors.images && <ErrorMessage message={zodErrors.images.message!} />}
                 </div>
-                <input type="file" className="w-0 h-0" id="file" {...register('images')} onChange={(e) => setImageName(e.target.value)} />
+                <input type="file" multiple className="w-0 h-0" id="file" {...register('images')} onChange={(e) =>  { setImageName(e.target.files ? Array.from(e.target.files).map(f => f.name + " (Size:" + (f.size / 1000000).toFixed(2) + ' MB)') : []) }} />
             </fieldset>
             <button className="button-secondary w-1/2 m-auto">Update post!</button>
         </form>
