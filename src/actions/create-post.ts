@@ -13,7 +13,6 @@ export const CreatePostAction = async (postDataValues: z.infer<typeof postSchema
     const slug = slugify(parsedData.title);
     const supabase = await createClient();
 
-
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { error: 'Not Authorized' }
 
@@ -29,7 +28,6 @@ export const CreatePostAction = async (postDataValues: z.infer<typeof postSchema
 
     await supabase.from
         ('posts').insert([{ ...parsedData, user_id: user.id, slug, images: imagePublicUrls }]);
-
 
     revalidatePath('/');
     redirect(`/${slug}`);

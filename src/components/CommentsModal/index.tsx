@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
 import { CommentType, GetUser, SingleCommentType } from "../../../utils/supabase/queries";
 import { useComments } from "@/hooks/useComments";
 import { useForm } from "react-hook-form";
@@ -11,7 +11,6 @@ import { CreateCommentAction } from "@/actions/create-comment";
 import { toast } from "sonner";
 import { DeleteComment } from "@/actions/delete-comment";
 import { formatDistanceFromNow } from "../../../utils/supabase/helpers";
-
 
 interface ICommentContext {
     showComments: boolean,
@@ -63,11 +62,12 @@ const ChildList = ({ parentCommentId, user, isPostOwner }: { parentCommentId: nu
 }
 
 const ChildComment = ({ comment, parentId, user, isPostOwner }: { comment: SingleCommentType, parentId: number, user: GetUser, isPostOwner: boolean }) => {
-    const { currentComments, error, isFetching } = useComments(comment.id);
+    const { currentComments } = useComments(comment.id);
+
     let commentsToDelete: number[] = []
     if (currentComments && currentComments.length > 1) commentsToDelete = [...currentComments.map(el => el.id), comment.id]
     else commentsToDelete = [comment.id];
-    if (error) return null;
+
     return (
         <>
             {currentComments &&
@@ -120,7 +120,11 @@ const MainComment = ({ comment, user, isPostOwner }: { comment: SingleCommentTyp
 const Toggle = ({ children, childButtonType, amountOfComments }: { children?: ReactNode, childButtonType: boolean, amountOfComments: number | null }) => {
     const { setShowComments, showComments, showTextField, setShowTextField } = useContext(CommentsContext) as ICommentContext;
     const handleShowTextField = () => setShowTextField(!showTextField);
-    const handleShowComments = () => setShowComments(!showComments);
+    const handleShowComments = () => { setShowComments(!showComments); }
+
+    useEffect(() => {
+        if (amountOfComments === 0 && showComments) setShowComments(false);
+    }, [amountOfComments]) //bad but it's needed, need to find a workaround.
 
     return (
         <div className="flex justify-between">
@@ -152,6 +156,7 @@ const DeleteButton = ({ commentId, parentId, isMainPostComment, amount }: { comm
             onError: () => toast.error("Could not delete comment!"),
             onSuccess: async () => {
                 toast.success('Deleted comment!')
+
                 if (isMainPostComment)
                     await queryClient.invalidateQueries({ queryKey: ['mainPost'] })
                 if (parentId)
@@ -204,7 +209,7 @@ const CommentForm = ({ id, rootComment, rootPost }: { id: number, rootComment?: 
         </>
     )
 }
-    
+
 Comments.CommentForm = CommentForm;
 Comments.List = List;
 Comments.ChildList = ChildList;

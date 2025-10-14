@@ -4,7 +4,7 @@ import { CommentRow } from "../../utils/supabase/helpers";
 
 export const useComments = ( id: number) => {
     
-    const { data: currentComments, isFetching, error } = useQuery({
+    const { data: currentComments, isFetching, error, isSuccess } = useQuery({
         queryKey: ['comments', id],
         queryFn: async () => {
             const { data, error } = await getComments(id, CommentRow.rootComment)
@@ -17,5 +17,5 @@ export const useComments = ( id: number) => {
         // staleTime: 10000
     })
 
-    return { currentComments, isFetching, error }
+    return { currentComments, isFetching, error , isSuccess }
 }
