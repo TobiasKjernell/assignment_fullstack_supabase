@@ -20,6 +20,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   if (error) return;
   return (  
     <div className="w-[80%] m-auto shadow-2xl shadow-black bg-[#1d1d1d]">
+      <h1 className="border text-center text-3xl p-2 capitalize" >{category}</h1> 
       {data && data.map(({ id, title, slug, users, images, created_at, category }) =>
         <Link href={`/${category.replace(" ", '-')}/${slug}`} className=" border-1 rounded-md mt-4 p-4 background-dark hover:bg-[#1d1d1d] flex justify-between items-center" key={id }>
           <div className="flex gap-5">
