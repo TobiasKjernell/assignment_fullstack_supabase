@@ -5,7 +5,6 @@ import DeleteButton from "./DeleteButton";
 import Image from "next/image";
 import EditButton from "./EditButton";
 
-
 const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const { slug } = await params;
     const { data: post } = await getSinglePost(slug)

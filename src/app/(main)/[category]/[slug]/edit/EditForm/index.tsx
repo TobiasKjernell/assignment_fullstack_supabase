@@ -11,7 +11,6 @@ import ErrorMessage from "@/components/ErrorMessage";
 import Image from "next/image";
 import { useState } from "react";
 
-
 const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pick<Tables<'posts'>, 'title' | 'content' | 'images' | 'category'> }) => {
     const [imageName, setImageName] = useState<string[]>([]);
     const [currentImages, setCurrentImages] = useState<string[] | null>(defaultValues.images)
@@ -33,7 +32,6 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
         e.preventDefault();
         defaultValues.images = null;
         setCurrentImages(null);
-
     }
 
     if (data?.error) toast.error(data.error);

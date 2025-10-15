@@ -1,4 +1,3 @@
-
 import { getSinglePost } from "../../../../../../utils/supabase/queries";
 import EditForm from "./EditForm";
 
