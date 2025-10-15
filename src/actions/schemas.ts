@@ -14,11 +14,12 @@ export const signUpSchema = z.object({
 export const postSchema = z.object({
     title: z.string().min(3, 'Title must have more than 3 characters'),
     content: z.string().optional(),
-    images: z.instanceof(FormData).optional()
+    images: z.instanceof(FormData).optional().or(z.null()),
+    category: z.string()
 })
 
 export const commentSchema = z.object({
-    content: z.string().max(250).min(5, '5 letters is minimum').optional(), 
+    content: z.string().max(250).min(5, '5 letters is minimum').optional(),
     rootPost: z.number().optional(),
     rootComment: z.number().optional()
 })
@@ -29,13 +30,13 @@ export const postWithImageSchema = postSchema.omit({ images: true })
         images: z.unknown()
             .transform(value => {
                 return value as FileList
-            }).transform((value) => Array.from(value)).refine(files => {
-                return files.every(file => [
-                    "image/png",
+            }).transform((value) => Array.from(value)).refine(files => {    
+                return files !== null ? files.every(file => [
+                    "image/png",    
                     "image/jpeg",
                     "image/jpg",
-                ].includes(file.type))      
-            }, { message: 'Wrong file type, needs to be: png, jpg, jpeg' })
+                ].includes(file.type)) : true
+            }, { error: 'Wrong file type, needs to be: png, jpg, jpeg' })
             .refine(files => { return files.every(item => item.size >= 1000000 ? false : true) },
-                { message: 'An image needs to be lesser than 1MB' }).optional()
+                { error: 'An image needs to be lesser than 1MB' }).optional().nullable()
     })          

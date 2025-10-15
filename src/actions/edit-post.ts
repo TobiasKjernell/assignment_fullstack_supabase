@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { uploadImages } from "../../utils/supabase/upload-image"
 
-export const EditPost = async ({ postId, updatedData }: { postId: number, updatedData: z.infer<typeof postSchema> }) => {
+export const EditPost = async ({ postId, updatedData, currentImages }: { postId: number, currentImages:string[] | null, updatedData: z.infer<typeof postSchema> }) => {
     const parsedData = postSchema.parse(updatedData);
     const supabase = await createClient();
 
@@ -20,17 +20,17 @@ export const EditPost = async ({ postId, updatedData }: { postId: number, update
     const imageFile = updatedData.images?.getAll('image');
     let imagePublicUrl;
     const isValid = postSchema.safeParse(updatedData);
-
+    
     if (imageFile?.every(item => (typeof item !== 'string') && item !== undefined)) {
-
+        
         if (!isValid.success) return { error: 'Malformed image file' }
             
         imagePublicUrl = await uploadImages(imageFile as File[]);
-    } else { imagePublicUrl = null }
+    } else { imagePublicUrl = currentImages }
 
-    const { data: updatedPost, error: updateError } = await supabase.from('posts').update({ ...parsedData, images: imagePublicUrl, slug: slugify(parsedData.title) }).eq('id', postId).select('slug').single();
+    const { data: updatedPost, error: updateError } = await supabase.from('posts').update({ ...parsedData, images: imagePublicUrl, slug: slugify(parsedData.title) }).eq('id', postId).select('slug, category').single();
     if (updateError) return { error: updateError.message }
 
     revalidatePath('/');
-    redirect(`/${updatedPost.slug}`);
+    redirect(`/${updatedPost.category}/${updatedPost.slug}`);
 }   

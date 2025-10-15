@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from "react-hook-form";
-import { Tables } from "../../../../../../utils/supabase/database-types";
+import { Tables } from "../../../../../../../utils/supabase/database-types";
 import { useMutation } from "@tanstack/react-query";
 import { EditPost } from "@/actions/edit-post";
 import { toast } from "sonner";
@@ -12,47 +12,56 @@ import Image from "next/image";
 import { useState } from "react";
 
 
-const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pick<Tables<'posts'>, 'title' | 'content' | 'images'> }) => {
+const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pick<Tables<'posts'>, 'title' | 'content' | 'images' | 'category'> }) => {
     const [imageName, setImageName] = useState<string[]>([]);
+    const [currentImages, setCurrentImages] = useState<string[] | null>(defaultValues.images)
     const { register, handleSubmit, formState: { errors: zodErrors } } = useForm({
         resolver: zodResolver(postWithImageSchema),
         defaultValues: {
             title: defaultValues.title,
             content: defaultValues.content || undefined,
-            images: defaultValues.images
+            images: null,
+            category: defaultValues.category
         }
     });
 
     const { data, mutate } = useMutation({
         mutationFn: EditPost,
-
     })
+
+    const handleDeleteImages = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        defaultValues.images = null;
+        setCurrentImages(null);
+
+    }
 
     if (data?.error) toast.error(data.error);
 
     return (
         <form onSubmit={handleSubmit(values => {
-            let imageForm: undefined | FormData = undefined;
+            let imageForm: null | FormData = null;
 
-            if (values.images && values.images.length > 0 && values.images.every(item => typeof item !== 'string')) {
+            if (values.images && values.images.length > 0) {
                 imageForm = new FormData();
                 values.images.forEach(item => imageForm!.append('image', item))
-                // imageForm.append('image', values.images[0]);
             }
 
             mutate({
                 postId, updatedData: {
                     content: values.content!,
                     title: values.title,
-                    images: imageForm
-                }
-
+                    images: imageForm,
+                    category: values.category
+                },
+                currentImages: defaultValues.images ?? null
             })
         }
 
         )} className="p-4 flex flex-col w-[700px] mx-auto shadow-2xl shadow-black my-[50] rounded-2xl">
-            <div className="flex gap-5 p-5">    
-            {defaultValues.images && defaultValues.images.map(item => <Image key={item} src={item} height={100} width={100} alt="image" />)}
+            <div className="flex gap-5 p-5 flex-wrap">
+                {currentImages && <button className="px-2 border" onClick={(e) => handleDeleteImages(e)}>Delete images</button>}
+                {currentImages && currentImages.map(item => <Image key={item} src={item} height={100} width={100} alt="image" />)}
             </div>
             <fieldset className="flex gap-3">
                 <label className="font-bold" htmlFor="title">Post title:</label>
@@ -67,12 +76,12 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
                 <textarea className="w-full h-100 border border-gray-500 p-2" {...register('content')} id="content" placeholder="Crickets in here..." />
             </fieldset>
             <fieldset className="mt-2 flex items-center gap-2">
-                <label className="font-bold cursor-pointer border p-1 text-nowrap" htmlFor="file">Update image?</label>
+                <label className="font-bold cursor-pointer border p-1 text-nowrap" htmlFor="file">Select new images</label>
                 <div className="flex flex-col">
-                   {imageName && imageName.map((file, index) => <div key={index + file} className="underline">{file}</div>)}
+                    {imageName && imageName.map((file, index) => <div key={index + file} className="underline">{file}</div>)}
                     {zodErrors.images && <ErrorMessage message={zodErrors.images.message!} />}
                 </div>
-                <input type="file" multiple className="w-0 h-0" id="file" {...register('images')} onChange={(e) =>  { setImageName(e.target.files ? Array.from(e.target.files).map(f => f.name + " (Size:" + (f.size / 1000000).toFixed(2) + ' MB)') : []) }} />
+                <input type="file" multiple className="w-0 h-0" id="file" {...register('images')} onChange={(e) => { setImageName(e.target.files ? Array.from(e.target.files).map(f => f.name + " (Size:" + (f.size / 1000000).toFixed(2) + ' MB)') : []) }} />
             </fieldset>
             <button className="button-secondary w-1/2 m-auto">Update post!</button>
         </form>

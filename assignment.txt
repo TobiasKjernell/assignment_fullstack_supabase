@@ -54,6 +54,9 @@ Allow multiple images to be uploaded, edited and displayed in a post
  
 Categories:
 Add categories to the application. Posts should belong to a category, and the user should be able to go to a dynamic route that only displays the posts in that category.
+1. Make a new main mage with category buttons
+2. Make a route to categories, holding old main page.
+
  
  
 Assignment Submission

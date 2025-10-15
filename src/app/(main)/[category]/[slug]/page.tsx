@@ -1,5 +1,5 @@
-import { getSinglePost } from "../../../../utils/supabase/queries";
-import { createClient } from "../../../../utils/supabase/server-client";
+import { getSinglePost } from "../../../../../utils/supabase/queries";
+import { createClient } from "../../../../../utils/supabase/server-client";
 import PostComments from "@/components/PostComments";
 import DeleteButton from "./DeleteButton";
 import Image from "next/image";
@@ -30,7 +30,7 @@ const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => 
                         <PostComments post={post} user={userAuth} />    
                     </div>
                     {isAuthor && <div className="flex justify-end gap-2">
-                        <EditButton slug={post.slug} />
+                        <EditButton slug={post.slug} category={post.category} />
                         <DeleteButton postId={post.id} />
                     </div>}
                 </div>

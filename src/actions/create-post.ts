@@ -24,11 +24,11 @@ export const CreatePostAction = async (postDataValues: z.infer<typeof postSchema
 
     if (!isValid.success) return { error: 'Malformed informations' }
 
-    const imagePublicUrls = imageFiles ? await uploadImages(imageFiles as File[]) : null;
+    const imagePublicUrls = imageFiles && imageFiles.length > 0 ? await uploadImages(imageFiles as File[]) : null;
 
     await supabase.from
         ('posts').insert([{ ...parsedData, user_id: user.id, slug, images: imagePublicUrls }]);
 
     revalidatePath('/');
-    redirect(`/${slug}`);
+    redirect(`/${parsedData.category.replaceAll(' ','-')}/${slug}`);
 }       

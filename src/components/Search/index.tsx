@@ -28,7 +28,7 @@ const SearchInput = () => {
             <Search />
             <div className="relative">
                 <input name="search" autoComplete='off' className="background-dark p-2 border-1" placeholder="Search for post title" onChange={(e) => handleInput(e)} value={inputValue.values as string} />
-                {data && data.length > 0 && inputValue.show && <div onClick={() => setInputValue({values:'', show:false})} className="absolute background-dark divide-y-1 border-1 w-full text-center">{data.map(({ title, slug }) => <Link className="block py-2 background-dark background-gold hover:text-[#222] " key={slug} href={`/${slug}`}>{title}</Link>)}</div>}
+                {data && data.length > 0 && inputValue.show && <div onClick={() => setInputValue({values:'', show:false})} className="absolute background-dark divide-y-1 border-1 w-full text-center">{data.map(({ title, slug, category }) => <Link className="block py-2 background-dark background-gold hover:text-[#222] " key={slug} href={`${category}/${slug}`}>{title}</Link>)}</div>}
             </div>
         </div >
     )

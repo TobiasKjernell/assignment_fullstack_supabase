@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Category } from "../../../../utils/constants";
 
 const errorMessages = ['Post title already taken..', 'Malformed image file', 'Not Authorized']
 const CreatePost = () => {
@@ -30,24 +31,38 @@ const CreatePost = () => {
 
     return (
         <form onSubmit={handleSubmit(values => {
-            const imageForm = new FormData();
-            if (values.images && values.images.length > 0) 
+            const imageForm:FormData = new FormData();
+
+            if (values.images && values.images.length > 0 && values.images.every(item => typeof item !== undefined))
                 values.images.forEach(item => imageForm.append('image', item))
-            
+
+
             mutate({
                 title: values.title,
                 content: values.content,
+                category: values.category,
                 images: imageForm
             })
 
         })} className="p-4 flex flex-col w-[700px] mx-auto shadow-2xl shadow-black my-[50] rounded-2xl">
 
-            <fieldset className="flex gap-3">
-                <label className="font-bold" htmlFor="title">Post title:</label>
+            <fieldset className="flex gap-3 justify-between">
                 <div className="flex gap-3">
+                    <label className="font-bold" htmlFor="title">Post title:</label>
                     <input className="border border-gray-500 indent-1" id="title" {...register('title')} placeholder="What's your post title?" />
                     {errors.title && <ErrorMessage message={errors.title.message!} />}
                     {/* {error && <ErrorMessage message={error.message} />} */}
+                </div>
+                <div className="flex items-center border">
+                    <label className="text-xs px-1" htmlFor="drop">Category:</label>
+                    <select id="drop" {...register('category')} defaultValue={Category.Animals} className="focus:outline-0 text-center bg-[#222] selectionFix">
+                        <option value={Category.Animals}>Animals</option>
+                        <option value={Category.Cars}>Cars</option>
+                        <option value={Category.Coding}>Coding</option>
+                        <option value={Category.Food}>Food</option>
+                        <option value={Category.OffTopic}>Off Topic</option>
+                        <option value={Category.Sports}>Sports</option>
+                    </select>
                 </div>
             </fieldset>
             <fieldset>
