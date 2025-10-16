@@ -28,7 +28,7 @@ const CreatePost = () => {
     //redirect from action bug with error, tmp fix
     //https://nextjs.org/docs/app/guides/redirecting
     //redirect returns a 307 (Temporary Redirect) status code by default. When used in a Server Action, it returns a 303 (See Other), which is commonly used for redirecting to a success page as a result of a POST request.
-    if (data?.error && errorMessages.some(err => err === data?.error)) toast.error('Post title already taken..', { id: 1, style: { color: 'red' } })
+    if (data?.error && errorMessages.some(err => err === data?.error)) {toast.error('Post title already taken..', { id: 1, style: { color: 'red' } }); data.error = ''}
 
     return (
         <form onSubmit={handleSubmit(values => {

@@ -31,8 +31,8 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
         onMutate: () => toast.loading('Editing post...', { id: 1, style: { color: '#fff' } }),
         onSettled: () => toast.success('Successfully updated!', { id: 1, style: { color: 'lightgreen' } })
     })
-   
-    if (data?.error && errorMessages.some(err => err === data?.error)) toast.error('Post title already taken..', { id: 1, style: { color: 'red' }   })
+
+    if (data?.error && errorMessages.some(err => err === data?.error)) { toast.error('Post title already taken..', { id: 1, style: { color: 'red' } }); data.error = "" }
 
     const handleDeleteImages = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -62,9 +62,11 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
             }
 
             )} className="p-4 flex flex-col w-[700px] mx-auto shadow-2xl shadow-black my-[50] rounded-2xl">
-                <BackButton />
-                <div className="flex gap-5 flex-wrap">
+                <div className="flex">
                     {currentImages && <button className="px-2 border" onClick={(e) => handleDeleteImages(e)}>Delete images</button>}
+                    <BackButton />
+                </div>
+                <div className="flex gap-5 flex-wrap">
                     {currentImages && currentImages.map(item => <Image key={item} src={item} height={100} width={100} alt="image" />)}
                 </div>
                 <fieldset className="flex gap-3">
