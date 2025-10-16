@@ -8,18 +8,18 @@ body {
 @layer components {
 
   .button-primary {
-    @apply font-bold rounded-2xl py-4 px-8 text-2xl border-1 border-[#DFB97C] bg-[#222] cursor-pointer
+    @apply font-bold rounded-2xl py-4 px-8 text-2xl border-1 border-[#DFB97C] bg-[#222] cursor-pointer  hover:bg-[#DFB97C] hover:text-[#222]
   }
 
   .button-secondary {
-    @apply font-bold rounded-xl py-2 px-4 text-2xl border-1 border-[#DFB97C] bg-[#222] cursor-pointer
+    @apply font-bold rounded-xl py-2 px-4 text-2xl border-1 border-[#DFB97C] bg-[#222] cursor-pointer hover:bg-[#DFB97C] hover:text-[#222]
   }
 
   .button-tertiary {
     @apply text-[#222] font-bold rounded-xl p-2 text-2xl border-1 border-[#222] bg-[#DFB97C] cursor-pointer
   }
 
-  .border-gold {
+  .border-gold {  
     @apply border-[#DFB97C] border
   }
 

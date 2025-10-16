@@ -74,7 +74,6 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
                     <div className="flex gap-3">
                         <input className="border border-gray-500 indent-1" {...register('title')} id="title" placeholder="What's your post title?" />
                         {zodErrors.title && <ErrorMessage message={zodErrors.title.message!} />}
-                        {/* {error && <ErrorMessage message={error.message} />} */}
                     </div>
                 </fieldset>
                 <fieldset>

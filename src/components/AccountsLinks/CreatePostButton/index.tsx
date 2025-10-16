@@ -7,7 +7,7 @@ const CreatePostButton = () => {
     }
     return (
         
-        <button className=" button-tertiary" onClick={handleOnClick}>Create Post</button>
+        <button className=" button-secondary" onClick={handleOnClick}>Create Post</button>
         
     )
 }

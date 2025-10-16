@@ -73,7 +73,7 @@ const ChildComment = ({ comment, parentId, user, isPostOwner }: { comment: Singl
         <>
             {currentComments &&
                 <div className="flex flex-col">
-                    {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={parentId} isMainPostComment={false} amount={currentComments.length} />}
+                    {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={parentId} isMainPostComment={false} />}
                     <div className="p-2 border overflow-hidden max-h-30"><p className="text-amber-100 break-words">{comment.content}</p></div>
                     <Comments>
                         <ChildParent>
@@ -101,7 +101,7 @@ const MainComment = ({ comment, user, isPostOwner }: { comment: SingleCommentTyp
         <>
             {currentComments &&
                 <div className="flex flex-col">
-                    {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={0} isMainPostComment={true} amount={currentComments.length} />}
+                    {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={0} isMainPostComment={true} />}
                     <div className="p-2 border overflow-hidden max-h-30"><p className="text-amber-100 break-words">{comment.content}</p></div>
                     <Comments>
                         <MainParent>
@@ -131,10 +131,16 @@ const Toggle = ({ children, childButtonType, amountOfComments }: { children?: Re
         <div className="flex justify-between">
             {children}
             <div className={`flex gap-2 my-2 ${childButtonType ? 'ml-auto' : ''}`}>
-                <button onClick={handleShowTextField} className={`text-nowrap text-sm border-1 ${childButtonType ? 'p-0 px-1 text-xs' : 'px-2'} rounded-sm hover:cursor-pointer`}>{showTextField ? 'Cancel comment' : 'Add comment'}</button>
-                <button disabled={!amountOfComments || amountOfComments === 0 ? true : false} onClick={handleShowComments} className={`text-nowrap text-sm border-1  ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1 '} rounded-sm hover:cursor-pointer`}>{showComments ? `Hide comments (${amountOfComments})` : `Show comments (${amountOfComments ?? 0})`}</button>
+                <button onClick={handleShowTextField}
+                    className={`text-nowrap text-sm border-1 ${childButtonType ? 'p-0 px-1 text-xs' : 'px-2'} rounded-sm hover:cursor-pointer hover:bg-[#DFB97C] hover:text-[#222] ${showTextField ? 'bg-[#DFB97C] text-[#222]' : ''}`}>
+                    {showTextField ? 'Cancel comment' : 'Add comment'}
+                </button>
+                <button disabled={!amountOfComments || amountOfComments === 0 ? true : false} onClick={handleShowComments}
+                    className={`text-nowrap text-sm border-1  ${childButtonType ? 'p-0 px-1 text-xs' : 'p-1 '} rounded-sm hover:cursor-pointer hover:bg-[#DFB97C] hover:text-[#222] ${showComments ? 'bg-[#DFB97C] text-[#222]' : ''}`}>
+                    {showComments ? `Hide comments (${amountOfComments})` : `${amountOfComments === 0 ? 'No' : 'Show'} comments (${amountOfComments ?? 0})`}
+                </button>
             </div>
-        </div>
+        </div>  
 
     )
 }
@@ -149,7 +155,7 @@ const MainParent = ({ children }: { children: ReactNode }) => {
     return <div className={`pl-5 flex flex-col  ${showComments ? 'border-l border-dashed' : ''}`}>{children}</div>
 }
 
-const DeleteButton = ({ commentId, parentId, isMainPostComment, amount }: { commentId: number[], parentId: number, isMainPostComment: boolean, amount: number }) => {
+const DeleteButton = ({ commentId, parentId, isMainPostComment }: { commentId: number[], parentId: number, isMainPostComment: boolean }) => {
     const queryClient = useQueryClient();
     const { mutate } = useMutation(
         {
@@ -184,7 +190,7 @@ const CommentForm = ({ id, rootComment, rootPost }: { id: number, rootComment?: 
 
         },
         onSuccess: async () => {
-            if(error?.message) return;
+            if (error?.message) return;
             setShowTextField(false);
             setShowComments(true);
 
@@ -204,7 +210,7 @@ const CommentForm = ({ id, rootComment, rootPost }: { id: number, rootComment?: 
                     <fieldset className="flex flex-col">
                         <label htmlFor="comment">Your comment:</label>
                         <textarea className="border h-50 p-2" id="content" {...register('content')} placeholder="Write your comment..." />
-                        {errors.content?.message &&  <ErrorMessage message={errors.content.message}/>}
+                        {errors.content?.message && <ErrorMessage message={errors.content.message} />}
                     </fieldset>
                     <button className="rounded-sm hover:cursor-pointer text-nowrap text-sm border p-1 mt-1">Post comment</button>
                 </form>
