@@ -4,7 +4,7 @@ import EditForm from "./EditForm";
 const Edit = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const { slug } = await params;
     const { data, error } = await getSinglePost(slug);
-
+  
     if(error) return <div>Something went wrong</div>
     return (
         <div>
@@ -13,4 +13,4 @@ const Edit = async ({ params }: { params: Promise<{ slug: string }> }) => {
     )
 
 }
-export default Edit;    
+export default Edit;        

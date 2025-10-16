@@ -17,6 +17,10 @@ export const EditPost = async ({ postId, updatedData, currentImages }: { postId:
     if (!user || user.id !== post?.user_id) return { error: 'Not Authorised' }
     if (error) return { error: error.message }
 
+    const slug = slugify(parsedData.title); 
+    const { data } = await supabase.from('posts').select('slug, id').eq('slug', slug).single()
+    if (data?.slug && data.id !== postId) return { error: 'Post title already taken..' }
+
     const imageFile = updatedData.images?.getAll('image');
     let imagePublicUrl;
     const isValid = postSchema.safeParse(updatedData);

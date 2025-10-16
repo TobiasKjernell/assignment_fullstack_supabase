@@ -4,6 +4,7 @@ import PostComments from "@/components/PostComments";
 import DeleteButton from "./DeleteButton";
 import Image from "next/image";
 import EditButton from "./EditButton";
+import BackButton from "@/components/BackButton";
 
 const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const { slug } = await params;
@@ -17,7 +18,8 @@ const SinglePost = async ({ params }: { params: Promise<{ slug: string }> }) => 
         <>
             {post &&
 
-                <div className="w-2xl p-4 m-auto border-gray-700 mt-4 rounded-2xl shadow-2xl shadow-black" >
+                <div className="flex flex-col w-2xl p-4 m-auto border-gray-700 mt-4 rounded-2xl shadow-2xl shadow-black" >
+                    <BackButton />
                     <h2 className="font-bold text-xl">{post.title}</h2>
                     <div className=" flex flex-col items-center justify-center">
                         {post.images && post.images.map(item => <Image key={item} className="mh-[500px] w-auto py-5" src={item} height={500} width={500} alt="post image" />)}

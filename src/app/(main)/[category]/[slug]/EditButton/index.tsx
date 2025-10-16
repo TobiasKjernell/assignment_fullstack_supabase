@@ -4,8 +4,8 @@ import Link from "next/link";
 
 const EditButton = ({slug, category}:{slug:string, category:string}) => {
     return (
-        <Link href={`/${category}/${slug}/edit`} className="button-secondary">Edit Post</Link>
+        <Link href={`/${category.replaceAll(' ', '-')}/${slug}/edit`} className="button-secondary">Edit Post</Link>
     )
 }
 
-export default EditButton;        
+export default EditButton;          
