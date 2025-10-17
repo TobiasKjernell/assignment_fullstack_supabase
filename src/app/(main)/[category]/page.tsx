@@ -19,24 +19,24 @@ export default async function CategoryPage({ params, searchParams }: { params: P
 
   if (error) return;
   return (  
-    <div className="w-[80%] m-auto shadow-2xl shadow-black bg-[#1d1d1d]">
+    <div className="w-full md:w-[80%] m-auto shadow-2xl shadow-black bg-[#1d1d1d]">
       <h1 className="border text-center text-3xl p-2 capitalize" >{category}</h1> 
       {data && data.map(({ id, title, slug, users, images, created_at, category }) =>
-        <Link href={`/${category.replace(" ", '-')}/${slug}`} className=" border-1 rounded-md mt-4 p-4 background-dark hover:bg-[#1d1d1d] flex justify-between items-center" key={id }>
-          <div className="flex gap-5">
+        <Link href={`/${category.replace(" ", '-')}/${slug}`} className="flex flex-col md:flex-row border-1 rounded-md mt-4 p-4 background-dark hover:bg-[#1d1d1d] justify-between items-center" key={id }>
+          <div className="flex gap-5">    
             <>
-              {images ? <div className="flex items-center gap-2">
-                <Image className="h-auto w-auto" src={images[0]} height={100} width={100} alt='post image' />
-                {images.length > 1 && <span >(+{images?.length - 1})</span>}
-              </div> : <ImageIcon size={128} color="#DFB97C" />}  
+              {images ? <div className="flex flex-col md:flex-row items-center gap-2">
+                <Image  src={images[0]} height={128} width={128} alt='post image' />
+                {images.length > 1 && <span>(+{images?.length - 1})</span>}
+              </div> : <ImageIcon size={128}  color="#DFB97C" />}       
             </>
             <div>
-              <h2 className="font-bold text-xl">{title}</h2>
+              <h2 className="font-bold text-xl">{title}</h2>  
               <div className="text-sm">Submitted {formatDistanceFromNow(created_at)} by {users.username}</div>
               <div></div>
             </div>
           </div>
-          <span className="capitalize text-3xl">{category}</span>
+          <span className="capitalize text-xl lg:text-3xl mt-4 md:mt-0 border-t-1 md:border-t-0  ">{category}</span>
         </Link>)}
       <Pagination count={dbLength!} />
     </div>

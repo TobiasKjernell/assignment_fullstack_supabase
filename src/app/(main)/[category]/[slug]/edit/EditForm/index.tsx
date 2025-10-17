@@ -61,15 +61,15 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
                 })
             }
 
-            )} className="p-4 flex flex-col w-[700px] mx-auto shadow-2xl shadow-black my-[50] rounded-2xl">
+            )} className="p-4 flex flex-col w-full md:w-[700px] mx-auto shadow-2xl shadow-black my-[50] rounded-2xl">
                 <div className="flex">
                     {currentImages && <button className="px-2 border" onClick={(e) => handleDeleteImages(e)}>Delete images</button>}
                     <BackButton />
                 </div>
-                <div className="flex gap-5 flex-wrap">
+                <div className="flex gap-5 flex-wrap py-5">
                     {currentImages && currentImages.map(item => <Image key={item} src={item} height={100} width={100} alt="image" />)}
                 </div>
-                <fieldset className="flex gap-3">
+                <fieldset className="flex flex-col gap-0 sm:flex-row sm:gap-3">
                     <label className="font-bold" htmlFor="title">Post title:</label>
                     <div className="flex gap-3">
                         <input className="border border-gray-500 indent-1" {...register('title')} id="title" placeholder="What's your post title?" />
@@ -88,7 +88,7 @@ const EditForm = ({ defaultValues, postId }: { postId: number, defaultValues: Pi
                     </div>
                     <input type="file" multiple className="w-0 h-0" id="file" {...register('images')} onChange={(e) => { setImageName(e.target.files ? Array.from(e.target.files).map(f => f.name + " (Size:" + (f.size / 1000000).toFixed(2) + ' MB)') : []) }} />
                 </fieldset>
-                <button className="button-secondary w-1/2 m-auto">Update post!</button>
+                <button className="button-secondary w-1/2 m-auto mt-5">Update post!</button>
             </form>
         </>
     )

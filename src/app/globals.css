@@ -12,7 +12,7 @@ body {
   }
 
   .button-secondary {
-    @apply font-bold rounded-xl py-2 px-4 text-2xl border-1 border-[#DFB97C] bg-[#222] cursor-pointer hover:bg-[#DFB97C] hover:text-[#222]
+    @apply font-bold rounded-xl py-0 md:py-2 px-2 md:px-4 text-sm sm:text-xl border-1 border-[#DFB97C] bg-[#222] cursor-pointer hover:bg-[#DFB97C] hover:text-[#222]
   }
 
   .button-tertiary {

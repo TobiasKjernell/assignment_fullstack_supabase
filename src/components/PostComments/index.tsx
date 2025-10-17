@@ -5,7 +5,7 @@ import { getComments, GetUser, SinglePostsType } from "../../../utils/supabase/q
 import { CommentRow } from "../../../utils/supabase/helpers";
 
 
-const PostComments = ({ post, user }: { post: SinglePostsType, user: GetUser }) => {
+const   PostComments = ({ post, user }: { post: SinglePostsType, user: GetUser }) => {
 
     const { data, error } = useQuery({
         queryKey: ['mainPost'],
@@ -20,7 +20,7 @@ const PostComments = ({ post, user }: { post: SinglePostsType, user: GetUser }) 
 
     const isPostOwner = user.user?.id === post.user_id ? true : false;
     if (error) throw error;
-
+        
     return (
         <>
             {

@@ -18,7 +18,7 @@ const CreatePost = () => {
         resolver: zodResolver(postWithImageSchema)
     });
 
-    const { mutate, error, data } = useMutation({
+    const { mutate, data } = useMutation({
         mutationFn: CreatePostAction,
         onMutate: () => toast.loading('Creating post...', { id: 1, style: { color: '#fff' } }),
         onSettled: () => toast.success('Post successfully posted!', { id: 1, style: { color: 'lightgreen' } })

@@ -32,7 +32,7 @@ const Comments = ({ children }: { children: ReactNode }) => {
         showTextField,
         setShowTextField
     }} >
-        <div className={`flex flex-col`}>
+        <div className={`flex flex-col w-full`}>
             {children}
         </div>
     </CommentsContext.Provider>
@@ -43,7 +43,7 @@ const List = ({ headComments, user, isPostOwner }: { headComments: CommentType, 
     const { showComments } = useContext(CommentsContext) as ICommentContext;
 
     return (
-        <div className={` ${showComments ? 'max-h-full' : 'max-h-0'} overflow-hidden `}>
+        <div className={` ${showComments ? 'max-h-full' : 'max-h-0'} overflow-hidden  `}>
             {headComments && headComments.length > 0 &&
                 headComments.map((item, index) => <MainComment key={index} comment={item} user={user} isPostOwner={isPostOwner} />)}
         </div>
@@ -52,10 +52,11 @@ const List = ({ headComments, user, isPostOwner }: { headComments: CommentType, 
 
 const ChildList = ({ parentCommentId, user, isPostOwner }: { parentCommentId: number, user: GetUser, isPostOwner: boolean }) => {
     const { showComments } = useContext(CommentsContext) as ICommentContext;
-    const { currentComments, error, isFetching } = useComments(parentCommentId);
+    const { currentComments, error } = useComments(parentCommentId);
 
+    if (error) return null;
     return (
-        <div className={` ${showComments ? 'max-w-full max-h-full' : 'max-w-0 max-h-0'} overflow-hidden transition-all ease-in duration-200`}>
+        <div className={` ${showComments ? 'max-w-full max-h-full' : 'max-w-0 max-h-0'}  overflow-hidden transition-all ease-in duration-200`}>
             {currentComments && currentComments.length > 0 &&
                 currentComments.map((item, index) => <ChildComment key={index} comment={item} parentId={parentCommentId} user={user} isPostOwner={isPostOwner} />)}
         </div>
@@ -74,7 +75,7 @@ const ChildComment = ({ comment, parentId, user, isPostOwner }: { comment: Singl
             {currentComments &&
                 <div className="flex flex-col">
                     {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={parentId} isMainPostComment={false} />}
-                    <div className="p-2 border overflow-hidden max-h-30"><p className="text-amber-100 break-words">{comment.content}</p></div>
+                    <div className="p-2 border overflow-hidden max-h-30"><p className="text-amber-100 break-words text-wrap">{comment.content}</p></div>
                     <Comments>
                         <ChildParent>
                             <Toggle childButtonType={true} amountOfComments={currentComments!.length}>
@@ -92,15 +93,16 @@ const ChildComment = ({ comment, parentId, user, isPostOwner }: { comment: Singl
 
 const MainComment = ({ comment, user, isPostOwner }: { comment: SingleCommentType, user: GetUser, isPostOwner: boolean }) => {
 
-    const { currentComments, error, isFetching } = useComments(comment.id);
+    const { currentComments, error, } = useComments(comment.id);
     let commentsToDelete: number[] = []
     if (currentComments && currentComments.length > 1) commentsToDelete = [...currentComments.map(el => el.id), comment.id]
     else commentsToDelete = [comment.id];
 
+    if (error) return null;
     return (
         <>
             {currentComments &&
-                <div className="flex flex-col">
+                <div className="flex flex-col w-full">
                     {(user.user && user.user.id === comment.user_id || isPostOwner) && <DeleteButton commentId={commentsToDelete} parentId={0} isMainPostComment={true} />}
                     <div className="p-2 border overflow-hidden max-h-30"><p className="text-amber-100 break-words">{comment.content}</p></div>
                     <Comments>
@@ -124,11 +126,11 @@ const Toggle = ({ children, childButtonType, amountOfComments }: { children?: Re
     const handleShowComments = () => { setShowComments(!showComments); }
 
     useEffect(() => {
-        if (amountOfComments === 0 && showComments) setShowComments(false);
+        if (amountOfComments === 0 && showComments) setShowComments(false);     
     }, [amountOfComments]) //bad but it's needed, need to find a workaround.
 
     return (
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row justify-between">
             {children}
             <div className={`flex gap-2 my-2 ${childButtonType ? 'ml-auto' : ''}`}>
                 <button onClick={handleShowTextField}
@@ -140,7 +142,7 @@ const Toggle = ({ children, childButtonType, amountOfComments }: { children?: Re
                     {showComments ? `Hide comments (${amountOfComments})` : `${amountOfComments === 0 ? 'No' : 'Show'} comments (${amountOfComments ?? 0})`}
                 </button>
             </div>
-        </div>  
+        </div>
 
     )
 }
@@ -184,7 +186,7 @@ const CommentForm = ({ id, rootComment, rootPost }: { id: number, rootComment?: 
     })
 
     const queryClient = useQueryClient();
-    const { mutate, error, data } = useMutation({
+    const { mutate, error } = useMutation({
         mutationFn: CreateCommentAction,
         onMutate: () => {
 
