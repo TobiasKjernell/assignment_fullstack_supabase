@@ -12,26 +12,26 @@ const SignUpForm = () => {
         resolver: zodResolver(signUpSchema)
     })
 
-    const { mutate, error, data } = useMutation({
+    const { mutate, data } = useMutation({
         mutationFn: SignUp
     })
     
     return (
         <>
-            <form onSubmit={handleSubmit(value => mutate(value))} className="p-4 flex flex-col w-[700px] mx-auto">
-                <fieldset className="flex gap-5">
+            <form onSubmit={handleSubmit(value => mutate(value))} className="p-4 flex flex-col w-full md:w-[700px] mx-auto">
+                <fieldset className="flex flex-col sm:flex-row sm:gap-5">
                     <label htmlFor="email">Enter your email:</label>
-                    <input autoComplete="off" id="email" {...register('email')} placeholder="Enter your email" />
+                    <input className="text-amber-100" autoComplete="off" id="email" {...register('email')} placeholder="Enter your email" />
                     {errors.email && <ErrorMessage message={errors.email.message!} />}
                 </fieldset>
-                  <fieldset className="flex gap-5">
+                  <fieldset className="flex flex-col sm:flex-row sm:gap-5">
                     <label htmlFor="username">Username:</label>
-                    <input autoComplete="off" type="username" id="username" {...register('username')} placeholder="Enter your username" />
+                    <input className="text-amber-100" autoComplete="off" type="username" id="username" {...register('username')} placeholder="Enter your username" />
                        {errors.username && <ErrorMessage message={errors.username.message!} />}
-                </fieldset>
-                  <fieldset className="flex gap-5">
+                </fieldset> 
+                  <fieldset className="flex flex-col sm:flex-row sm:gap-5">
                     <label htmlFor="password">Password:</label>
-                    <input autoComplete="off" type="password" id="password" {...register('password')} placeholder="Enter your password" />
+                    <input className="text-amber-100" autoComplete="off" type="password" id="password" {...register('password')} placeholder="Enter your password" />
                        {errors.password && <ErrorMessage message={errors.password.message!} />}
                 </fieldset>
                 <button className="button-secondary w-1/2 m-auto mt-5">Sign Up</button>
