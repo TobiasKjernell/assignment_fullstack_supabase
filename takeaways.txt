@@ -7,3 +7,15 @@ if you changing anything in database/tables, you'll have to update project types
 //if we making a async call to supabase, we can create a return type for that call: 
 import { QueryData } from '@supabase/supabase-js';  
 export type HomePostsType = QueryData<ReturnType<typeof getHomePosts>> 
+
+
+
+---ret
+
+server side rendering takes away alot of the snappy feeling on a webside. 
+serverside setup with supabase is provided on their api site, how-to.
+nextjs is no bueno with errors still existing, almost like they gave up on it.
+-- have to make a website with Tanstack Smart just to try it out.
+
+supabase really easy to get things going, very nice when database is needed for your own projects.
+im still more into clientside websites but serverside/hybrid is needed for e-comms sites.
